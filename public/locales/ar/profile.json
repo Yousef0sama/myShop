@@ -1,0 +1,62 @@
+{
+  "sidebar": {
+    "title": "إدارة الحساب",
+    "personalInfo": "البيانات الشخصية",
+    "addresses": "العناوين المخزنة",
+    "paymentCards": "بطاقات الدفع",
+    "payoutCard": "بطاقة الأرباح",
+    "adminInfo": "بيانات الأدمن"
+  },
+  "infoTitle": "البيانات الشخصية",
+  "infoSubtitle": "عرض وتعديل معلومات حسابك الأساسية",
+  "updateSuccess": "تم تحديث البيانات بنجاح",
+  "passwordMismatchError": "كلمتا المرور غير متطابقتين",
+  "cancelBtn": "إلغاء",
+  "saveBtn": "حفظ التغييرات",
+  "labels": {
+    "currentPassword": "كلمة المرور الحالية"
+  },
+  "editFields": {
+    "name": "تعديل الاسم",
+    "email": "تعديل البريد الإلكتروني",
+    "phone": "تعديل رقم الهاتف",
+    "password": "تغيير كلمة المرور"
+  },
+  "addressesTitle": "العناوين المخزنة",
+  "addressesSubtitle": "إدارة عناوين الشحن والتوصيل الخاصة بك",
+  "addNewAddress": "إضافة عنوان جديد",
+  "editAddress": "تعديل العنوان",
+  "noAddresses": "لا توجد عناوين مسجلة حالياً",
+  "defaultBadge": "العنوان الرئيسي",
+  "editBtn": "تعديل",
+  "deleteBtn": "حذف",
+  "country": "الدولة",
+  "state": "المحافظة",
+  "city": "المدينة",
+  "street": "الشارع / التفاصيل",
+  "setAsDefault": "تعيين كعنوان رئيسي",
+  "cancel": "إلغاء",
+  "cardsTitle": "بطاقات الدفع",
+  "cardsSubtitle": "إدارة بطاقات الدفع المخزنة في حسابك",
+  "payoutCardsTitle": "بطاقة استلام الأرباح",
+  "payoutCardsSubtitle": "البطاقة أو الحساب البنكي المخصص لتحويل مستحقاتك",
+  "addNewCard": "إضافة بطاقة جديدة",
+  "noCards": "لا توجد بطاقات مخزنة حالياً",
+  "noPayoutCards": "لا توجد بطاقة أرباح مسجلة",
+  "deleteCard": "حذف البطاقة",
+  "cardHolderName": "اسم حامل البطاقة",
+  "cardNumber": "رقم البطاقة",
+  "expiryDate": "تاريخ الانتهاء",
+  "cvv": "CVC / CVV",
+  "saveCard": "حفظ البطاقة",
+  "errors": {
+    "updateFailed": "فشل تحديث البيانات الشخصية",
+    "fetchAddressesFailed": "فشل جلب العناوين",
+    "addAddressFailed": "فشل إضافة العنوان",
+    "updateAddressFailed": "فشل تعديل العنوان",
+    "deleteAddressFailed": "فشل حذف العنوان",
+    "fetchCardsFailed": "فشل جلب البطاقات",
+    "addCardFailed": "فشل إضافة البطاقة",
+    "deleteCardFailed": "فشل حذف البطاقة"
+  }
+}

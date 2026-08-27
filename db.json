@@ -1,0 +1,42 @@
+{
+  "users": [
+    {
+      "email": "yousef@gmail.com",
+      "password": "$2a$10$2TIZ03YbDb9zk7K9qdpgauKAwhqUf.JihMLe5oBSUEXolnwXfkynq",
+      "name": "Yousef Osama",
+      "role": "customer",
+      "phone": "01280641885",
+      "isDeleted": false,
+      "id": 1
+    }
+  ],
+  "addresses": [
+    {
+      "country": "Egypt",
+      "state": "menofia",
+      "city": "menouf",
+      "street": "Rehan S.T",
+      "isDefault": true,
+      "userId": 1,
+      "id": 1
+    }
+  ],
+  "cards": [
+    {
+      "userId": 1,
+      "cardHolder": "yousef osama",
+      "last4": "3456",
+      "expiry": "12/34",
+      "brand": "visa",
+      "id": 1
+    }
+  ],
+  "categories": [],
+  "products": [],
+  "carts": [],
+  "orders": [],
+  "reviews": [],
+  "wishList": [],
+  "promoCodes": [],
+  "$schema": "./node_modules/json-server/schema.json"
+}

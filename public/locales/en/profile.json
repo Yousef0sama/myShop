@@ -1,0 +1,62 @@
+{
+  "sidebar": {
+    "title": "Account Settings",
+    "personalInfo": "Personal Info",
+    "addresses": "Saved Addresses",
+    "paymentCards": "Payment Cards",
+    "payoutCard": "Payout Card",
+    "adminInfo": "Admin Info"
+  },
+  "infoTitle": "Personal Information",
+  "infoSubtitle": "View and edit your basic account information",
+  "updateSuccess": "Profile updated successfully",
+  "passwordMismatchError": "Passwords do not match",
+  "cancelBtn": "Cancel",
+  "saveBtn": "Save Changes",
+  "labels": {
+    "currentPassword": "Current Password"
+  },
+  "editFields": {
+    "name": "Edit Name",
+    "email": "Edit Email",
+    "phone": "Edit Phone",
+    "password": "Change Password"
+  },
+  "addressesTitle": "Saved Addresses",
+  "addressesSubtitle": "Manage your shipping and delivery addresses",
+  "addNewAddress": "Add New Address",
+  "editAddress": "Edit Address",
+  "noAddresses": "No addresses saved yet",
+  "defaultBadge": "Default Address",
+  "editBtn": "Edit",
+  "deleteBtn": "Delete",
+  "country": "Country",
+  "state": "State / Governorate",
+  "city": "City",
+  "street": "Street Details",
+  "setAsDefault": "Set as default address",
+  "cancel": "Cancel",
+  "cardsTitle": "Payment Cards",
+  "cardsSubtitle": "Manage the payment cards saved to your account",
+  "payoutCardsTitle": "Payout Account",
+  "payoutCardsSubtitle": "The card or bank account configured for receiving your payouts",
+  "addNewCard": "Add New Card",
+  "noCards": "No cards saved yet",
+  "noPayoutCards": "No payout card saved yet",
+  "deleteCard": "Delete Card",
+  "cardHolderName": "Cardholder Name",
+  "cardNumber": "Card Number",
+  "expiryDate": "Expiry Date",
+  "cvv": "CVC / CVV",
+  "saveCard": "Save Card",
+  "errors": {
+    "updateFailed": "Failed to update profile data",
+    "fetchAddressesFailed": "Failed to fetch addresses",
+    "addAddressFailed": "Failed to add address",
+    "updateAddressFailed": "Failed to update address",
+    "deleteAddressFailed": "Failed to delete address",
+    "fetchCardsFailed": "Failed to fetch payment cards",
+    "addCardFailed": "Failed to add card",
+    "deleteCardFailed": "Failed to delete card"
+  }
+}
