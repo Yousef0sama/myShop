@@ -30,12 +30,17 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "server": "json-server-auth db.json --port 3001"
+    "server": "json-server-auth db.json --port 3001",
+    "lint": "eslint --ext .js,.jsx src",
+    "lint:fix": "npm run lint -- --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
   },
   "eslintConfig": {
     "extends": [
       "react-app",
-      "react-app/jest"
+      "react-app/jest",
+      "prettier"
     ]
   },
   "browserslist": {
@@ -52,8 +57,10 @@
   },
   "devDependencies": {
     "autoprefixer": "^10.5.4",
+    "eslint-config-prettier": "^10.1.8",
     "json-server": "^0.17.4",
     "postcss": "^8.5.26",
+    "prettier": "^3.9.6",
     "tailwindcss": "^3.4.19"
   }
 }

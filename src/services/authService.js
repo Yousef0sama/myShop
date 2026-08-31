@@ -6,6 +6,9 @@ export const authService = {
   // * Authenticate user using email and password
   login: async (email, password) => {
     const response = await api.post(ENDPOINTS.LOGIN, { email, password });
+    if (response.data.user?.isDeleted || response.data.user?.isRestricted) {
+      throw new Error('This account is unavailable. Please contact support.');
+    }
     return response.data; // Returns { accessToken, user }
   },
 
@@ -15,6 +18,7 @@ export const authService = {
       ...userData,
       role: userData.role || 'customer',
       isDeleted: false,
+      isRestricted: false,
     };
     const response = await api.post(ENDPOINTS.REGISTER, payload);
     return response.data; // Returns { accessToken, user }

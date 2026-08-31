@@ -38,9 +38,7 @@ const BankCardPreview = ({ cardNumber, cardHolder, expiryDate, cvc }) => {
         </div>
         <div className="text-right">
           <p className="text-[10px] text-blue-200/70 uppercase tracking-wider">Expires</p>
-          <p className="font-mono font-medium text-sm">
-            {expiryDate || 'MM/YY'}
-          </p>
+          <p className="font-mono font-medium text-sm">{expiryDate || 'MM/YY'}</p>
         </div>
       </div>
     </div>

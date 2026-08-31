@@ -27,13 +27,15 @@ const Input = ({
   // ! Helper function to detect text direction based on first typed character
   const detectDirection = (text) => {
     if (!text || typeof text !== 'string') return 'auto';
-    
+
     const trimmed = text.trim();
     if (!trimmed) return 'auto';
 
     const firstChar = trimmed.charAt(0);
     // ? Regex checking for Arabic unicode ranges
-    const isArabic = /[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF]/.test(firstChar);
+    const isArabic = /[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF]/.test(
+      firstChar
+    );
 
     return isArabic ? 'rtl' : 'ltr';
   };
@@ -43,7 +45,12 @@ const Input = ({
   const computedDirection = dir || (isTechnicalField ? 'ltr' : detectDirection(value));
 
   // * Text alignment and padding logic strictly mapped via logical properties
-  const textAlignClass = computedDirection === 'rtl' ? 'text-right' : computedDirection === 'ltr' ? 'text-left' : 'text-start';
+  const textAlignClass =
+    computedDirection === 'rtl'
+      ? 'text-right'
+      : computedDirection === 'ltr'
+        ? 'text-left'
+        : 'text-start';
   const leadingPadding = icon ? 'ps-10' : 'ps-3';
   const trailingPadding = isPasswordType ? 'pe-10' : 'pe-3';
 
@@ -58,7 +65,6 @@ const Input = ({
 
       {/* ! Parent wrapper tied strictly to the calculated input direction */}
       <div className="relative flex items-center" dir={computedDirection}>
-        
         {/* ? Leading icon aligned to start of input direction */}
         {icon && (
           <div className="absolute start-3 text-gray-400 dark:text-gray-500 pointer-events-none flex items-center justify-center">

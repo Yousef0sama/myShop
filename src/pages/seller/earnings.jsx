@@ -1,8 +1,3 @@
-
 export default function Earnings() {
-  return (
-    <div>
-      Earnings
-    </div>
-  )
+  return <div>Earnings</div>;
 }

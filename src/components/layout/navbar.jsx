@@ -72,10 +72,12 @@ export default function Navbar() {
     <nav className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 sticky top-0 z-40 shadow-sm transition-colors duration-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16 items-center">
-          
           {/* * Brand logo icon and main desktop navigation links */}
           <div className="flex items-center gap-8">
-            <Link to="/" className="flex items-center gap-2 text-xl font-bold text-blue-600 dark:text-blue-400">
+            <Link
+              to="/"
+              className="flex items-center gap-2 text-xl font-bold text-blue-600 dark:text-blue-400"
+            >
               <FontAwesomeIcon icon={faShoppingBag} className="text-2xl" />
               <span>{t('brand')}</span>
             </Link>
@@ -83,17 +85,26 @@ export default function Navbar() {
             {/* Desktop Navigation Links based on Roles */}
             <div className="hidden md:flex items-center gap-6">
               {isAdmin && (
-                <Link to="/dashboard" className="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-medium transition-colors">
+                <Link
+                  to="/dashboard"
+                  className="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-medium transition-colors"
+                >
                   {t('dashboard')}
                 </Link>
               )}
-              
+
               {isCustomer && (
                 <>
-                  <Link to="/products" className="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-medium transition-colors">
+                  <Link
+                    to="/products"
+                    className="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-medium transition-colors"
+                  >
                     {t('products')}
                   </Link>
-                  <Link to="/wishlist" className="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-medium transition-colors">
+                  <Link
+                    to="/wishlist"
+                    className="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-medium transition-colors"
+                  >
                     {t('wishList')}
                   </Link>
                 </>
@@ -101,17 +112,26 @@ export default function Navbar() {
 
               {isSeller && (
                 <>
-                  <Link to="/inventory" className="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-medium transition-colors">
+                  <Link
+                    to="/inventory"
+                    className="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-medium transition-colors"
+                  >
                     {t('inventory')}
                   </Link>
-                  <Link to="/earnings" className="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-medium transition-colors">
+                  <Link
+                    to="/earnings"
+                    className="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-medium transition-colors"
+                  >
                     {t('earnings')}
                   </Link>
                 </>
               )}
 
               {(isCustomer || isSeller) && (
-                <Link to="/orders" className="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-medium transition-colors">
+                <Link
+                  to="/orders"
+                  className="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-medium transition-colors"
+                >
                   {t('orders')}
                 </Link>
               )}
@@ -120,14 +140,20 @@ export default function Navbar() {
 
           {/* * Desktop action controls */}
           <div className="hidden md:flex items-center gap-4">
-            
             {/* ? Wishlist & Cart icons (Rendered only for Customers) */}
             {isCustomer && (
               <>
-                <Link to="/wishlist" className="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 p-2 transition-colors" title={t('wishList')}>
+                <Link
+                  to="/wishlist"
+                  className="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 p-2 transition-colors"
+                  title={t('wishList')}
+                >
                   <FontAwesomeIcon icon={faHeart} className="text-xl" />
                 </Link>
-                <Link to="/cart" className="relative text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 p-2 transition-colors">
+                <Link
+                  to="/cart"
+                  className="relative text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 p-2 transition-colors"
+                >
                   <FontAwesomeIcon icon={faShoppingCart} className="text-xl" />
                   {cartCount > 0 && (
                     <span className="absolute -top-1 -right-1 bg-blue-600 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center font-bold">
@@ -145,20 +171,26 @@ export default function Navbar() {
                 className="flex items-center gap-2 p-2 text-gray-600 dark:text-gray-300 hover:text-blue-600 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors focus:outline-none"
                 title={t('settings')}
               >
-                <FontAwesomeIcon icon={faCog} className={`text-xl transition-transform duration-300 ${isSettingsOpen ? 'rotate-90' : ''}`} />
+                <FontAwesomeIcon
+                  icon={faCog}
+                  className={`text-xl transition-transform duration-300 ${isSettingsOpen ? 'rotate-90' : ''}`}
+                />
               </button>
 
               {/* ? Animated settings dropdown floating menu */}
               {isSettingsOpen && (
                 <div className="absolute end-0 mt-2 w-64 bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-xl shadow-lg py-3 px-4 z-50 space-y-4 animate-in fade-in slide-in-from-top-2 duration-200">
-                  
                   {/* Preferences section for Dark Mode and Language toggles */}
                   <div className="space-y-3 pb-3 border-b border-gray-100 dark:border-gray-700">
-                    <p className="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider">{t('settings')}</p>
-                    
+                    <p className="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider">
+                      {t('settings')}
+                    </p>
+
                     {/* Dark mode switch */}
                     <div className="flex items-center justify-between">
-                      <span className="text-sm text-gray-700 dark:text-gray-200 font-medium">{t('darkMode')}</span>
+                      <span className="text-sm text-gray-700 dark:text-gray-200 font-medium">
+                        {t('darkMode')}
+                      </span>
                       <SlideButton
                         checked={darkMode}
                         onChange={() => dispatch(toggleDarkMode())}
@@ -169,7 +201,9 @@ export default function Navbar() {
 
                     {/* Language switch */}
                     <div className="flex items-center justify-between">
-                      <span className="text-sm text-gray-700 dark:text-gray-200 font-medium">{t('language')}</span>
+                      <span className="text-sm text-gray-700 dark:text-gray-200 font-medium">
+                        {t('language')}
+                      </span>
                       <SlideButton
                         checked={currentLanguage === 'ar'}
                         onChange={() => dispatch(toggleLanguage())}
@@ -220,11 +254,9 @@ export default function Navbar() {
                       </>
                     )}
                   </div>
-
                 </div>
               )}
             </div>
-
           </div>
 
           {/* ? Mobile control bar */}
@@ -251,14 +283,12 @@ export default function Navbar() {
               <FontAwesomeIcon icon={isMobileMenuOpen ? faTimes : faBars} className="text-xl" />
             </button>
           </div>
-
         </div>
       </div>
 
       {/* * Collapsible drawer menu for mobile view */}
       {isMobileMenuOpen && (
         <div className="md:hidden border-t border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-900 px-4 pt-3 pb-5 space-y-4">
-          
           {/* Mobile Navigation Links based on Roles */}
           {isAdmin && (
             <Link
@@ -317,13 +347,15 @@ export default function Navbar() {
               {t('orders')}
             </Link>
           )}
-          
+
           <hr className="border-gray-100 dark:border-gray-800" />
 
           {/* Mobile preferences switches */}
           <div className="space-y-3">
             <div className="flex items-center justify-between">
-              <span className="text-sm text-gray-700 dark:text-gray-200 font-medium">{t('darkMode')}</span>
+              <span className="text-sm text-gray-700 dark:text-gray-200 font-medium">
+                {t('darkMode')}
+              </span>
               <SlideButton
                 checked={darkMode}
                 onChange={() => dispatch(toggleDarkMode())}
@@ -332,7 +364,9 @@ export default function Navbar() {
               />
             </div>
             <div className="flex items-center justify-between">
-              <span className="text-sm text-gray-700 dark:text-gray-200 font-medium">{t('language')}</span>
+              <span className="text-sm text-gray-700 dark:text-gray-200 font-medium">
+                {t('language')}
+              </span>
               <SlideButton
                 checked={currentLanguage === 'ar'}
                 onChange={() => dispatch(toggleLanguage())}

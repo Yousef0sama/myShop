@@ -80,8 +80,8 @@ const Select = ({
           error
             ? 'border-red-500 dark:border-red-500 focus:ring-red-200 dark:focus:ring-red-900/50'
             : isOpen
-            ? 'border-blue-500 ring-2 ring-blue-200 dark:ring-blue-900/50'
-            : 'border-gray-300 dark:border-gray-600'
+              ? 'border-blue-500 ring-2 ring-blue-200 dark:ring-blue-900/50'
+              : 'border-gray-300 dark:border-gray-600'
         } ${className}`}
       >
         {/* ? Leading Icon/Flag Priority: Option Flag -> Option Icon -> Main Component Icon */}
@@ -92,7 +92,9 @@ const Select = ({
         )}
 
         {/* Selected Label or Placeholder */}
-        <span className={`block truncate ${!selectedOption ? 'text-gray-400 dark:text-gray-500' : ''}`}>
+        <span
+          className={`block truncate ${!selectedOption ? 'text-gray-400 dark:text-gray-500' : ''}`}
+        >
           {selectedOption ? selectedOption.label : placeholder}
         </span>
 

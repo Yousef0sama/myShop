@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { 
-  faUser, 
-  faEnvelope, 
-  faPhone, 
-  faLock, 
-  faEdit, 
-  faTimes, 
-  faShieldAlt 
+import {
+  faUser,
+  faEnvelope,
+  faPhone,
+  faLock,
+  faEdit,
+  faTimes,
+  faShieldAlt,
 } from '@fortawesome/free-solid-svg-icons';
 
 import useAppTranslation from '../../hooks/useAppTranslation';
@@ -136,14 +136,10 @@ export default function UserInfoTab({ user }) {
       {/* * Main Section Header */}
       <div className="flex items-center justify-between pb-4 border-b border-gray-200 dark:border-gray-800">
         <div>
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
-            {t('infoTitle')}
-          </h2>
-          <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-            {t('infoSubtitle')}
-          </p>
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white">{t('infoTitle')}</h2>
+          <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">{t('infoSubtitle')}</p>
         </div>
-        
+
         {/* * User Role Badge */}
         <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-blue-100 text-blue-800 dark:bg-blue-900/40 dark:text-blue-300 capitalize">
           <FontAwesomeIcon icon={faShieldAlt} className="text-xs" />
@@ -153,17 +149,20 @@ export default function UserInfoTab({ user }) {
 
       {/* * Profile Summary Cards Grid */}
       <div className="flex flex-col gap-4">
-        
         {/* ? Name Card */}
         <Card variant="outline" padding="small">
-          <div className='flex items-center justify-between'>
+          <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="p-3 bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 rounded-lg">
                 <FontAwesomeIcon icon={faUser} className="text-lg" />
               </div>
               <div>
-                <p className="text-xs text-gray-500 dark:text-gray-400 font-medium">{tAuth('labels.name')}</p>
-                <p className="text-base font-semibold text-gray-900 dark:text-white">{user?.name || '-'}</p>
+                <p className="text-xs text-gray-500 dark:text-gray-400 font-medium">
+                  {tAuth('labels.name')}
+                </p>
+                <p className="text-base font-semibold text-gray-900 dark:text-white">
+                  {user?.name || '-'}
+                </p>
               </div>
             </div>
             <Button variant="primary" size="sm" onClick={() => handleOpenModal('name')}>
@@ -180,8 +179,12 @@ export default function UserInfoTab({ user }) {
                 <FontAwesomeIcon icon={faEnvelope} className="text-lg" />
               </div>
               <div>
-                <p className="text-xs text-gray-500 dark:text-gray-400 font-medium">{tAuth('labels.email')}</p>
-                <p className="text-base font-semibold text-gray-900 dark:text-white">{user?.email || '-'}</p>
+                <p className="text-xs text-gray-500 dark:text-gray-400 font-medium">
+                  {tAuth('labels.email')}
+                </p>
+                <p className="text-base font-semibold text-gray-900 dark:text-white">
+                  {user?.email || '-'}
+                </p>
               </div>
             </div>
             <Button variant="primary" size="sm" onClick={() => handleOpenModal('email')}>
@@ -198,8 +201,12 @@ export default function UserInfoTab({ user }) {
                 <FontAwesomeIcon icon={faPhone} className="text-lg" />
               </div>
               <div>
-                <p className="text-xs text-gray-500 dark:text-gray-400 font-medium">{tAuth('labels.phone')}</p>
-                <p className="text-base font-semibold text-gray-900 dark:text-white">{user?.phone || '-'}</p>
+                <p className="text-xs text-gray-500 dark:text-gray-400 font-medium">
+                  {tAuth('labels.phone')}
+                </p>
+                <p className="text-base font-semibold text-gray-900 dark:text-white">
+                  {user?.phone || '-'}
+                </p>
               </div>
             </div>
             <Button variant="primary" size="sm" onClick={() => handleOpenModal('phone')}>
@@ -216,7 +223,9 @@ export default function UserInfoTab({ user }) {
                 <FontAwesomeIcon icon={faLock} className="text-lg" />
               </div>
               <div>
-                <p className="text-xs text-gray-500 dark:text-gray-400 font-medium">{tAuth('labels.password')}</p>
+                <p className="text-xs text-gray-500 dark:text-gray-400 font-medium">
+                  {tAuth('labels.password')}
+                </p>
                 <p className="text-base font-semibold text-gray-900 dark:text-white">••••••••</p>
               </div>
             </div>
@@ -225,24 +234,18 @@ export default function UserInfoTab({ user }) {
             </Button>
           </div>
         </Card>
-
       </div>
 
       {/* * Interactive Edit Form Overlay */}
       {activeModal && (
         <div className="absolute top-[-1.25rem] inset-0 z-40 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs animate-in fade-in duration-200">
           <div className="w-full max-w-md bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden border border-gray-100 dark:border-gray-700">
-            
             {/* Modal Header */}
             <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 dark:border-gray-700">
               <h3 className="text-lg font-bold text-gray-900 dark:text-white">
                 {t(`editFields.${activeModal}`)}
               </h3>
-              <Button
-                onClick={handleCloseModal}
-                variant='danger'
-                size='sm'
-              >
+              <Button onClick={handleCloseModal} variant="danger" size="sm">
                 <FontAwesomeIcon icon={faTimes} className="text-lg" />
               </Button>
             </div>
@@ -318,7 +321,13 @@ export default function UserInfoTab({ user }) {
               )}
 
               <div className="flex items-center justify-end gap-3 pt-4">
-                <Button variant="secondary" size="sm" onClick={handleCloseModal} type="button" disabled={isSubmitting}>
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  onClick={handleCloseModal}
+                  type="button"
+                  disabled={isSubmitting}
+                >
                   {t('cancelBtn')}
                 </Button>
                 <Button variant="primary" size="sm" type="submit" isLoading={isSubmitting}>
@@ -326,7 +335,6 @@ export default function UserInfoTab({ user }) {
                 </Button>
               </div>
             </form>
-
           </div>
         </div>
       )}

@@ -1,7 +1,11 @@
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
-import { 
-  faUser, faMapMarkerAlt, faCreditCard, faWallet, faShieldAlt 
+import {
+  faUser,
+  faMapMarkerAlt,
+  faCreditCard,
+  faWallet,
+  faShieldAlt,
 } from '@fortawesome/free-solid-svg-icons';
 
 import useAppTranslation from '../hooks/useAppTranslation';
@@ -15,7 +19,7 @@ import CardsTab from '../components/profile/CardsTab';
 
 const Profile = () => {
   const { t } = useAppTranslation('profile');
-  const currentUser = useSelector((state) => state.auth?.user); 
+  const currentUser = useSelector((state) => state.auth?.user);
   const role = currentUser?.role || 'customer';
   const [activeTab, setActiveTab] = useState('info');
 
@@ -27,9 +31,7 @@ const Profile = () => {
           { id: 'payout', label: t('sidebar.payoutCard'), icon: faWallet },
         ];
       case 'admin':
-        return [
-          { id: 'info', label: t('sidebar.adminInfo'), icon: faShieldAlt },
-        ];
+        return [{ id: 'info', label: t('sidebar.adminInfo'), icon: faShieldAlt }];
       case 'customer':
       default:
         return [
@@ -45,10 +47,7 @@ const Profile = () => {
   return (
     <div className="w-full flex-1 flex flex-col md:flex-row gap-6 p-4 sm:p-6 md:p-8">
       {/* Sidebar Section */}
-      <Sidebar
-        title={t('sidebar.title')}
-        subtitle={currentUser?.name || ''}
-      >
+      <Sidebar title={t('sidebar.title')} subtitle={currentUser?.name || ''}>
         {sidebarItems.map((item) => (
           <SidebarItem
             key={item.id}
@@ -78,11 +77,7 @@ const Profile = () => {
           </>
         )}
 
-        {role === 'admin' && (
-          <>
-            {activeTab === 'info' && <UserInfoTab user={currentUser} />}
-          </>
-        )}
+        {role === 'admin' && <>{activeTab === 'info' && <UserInfoTab user={currentUser} />}</>}
       </main>
     </div>
   );

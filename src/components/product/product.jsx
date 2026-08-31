@@ -1,23 +1,41 @@
-import React, { useState } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faStar,
   faShoppingCart,
   faTrash,
   faPencil,
-} from "@fortawesome/free-solid-svg-icons";
-import ProductModal from "../modals/productModal";
+  faHeart,
+} from '@fortawesome/free-solid-svg-icons';
+import ProductModal from '../modals/productModal';
+import { addToCart } from '../../store/slices/cartSlice';
+import { toggleWishlistProduct } from '../../store/slices/wishlistSlice';
 
 export default function Product({ product, onDelete, onEdit, canManage = false }) {
   const [isEditOpen, setIsEditOpen] = useState(false);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const user = useSelector((state) => state.auth.user);
+  const productIds = useSelector((state) => state.wishlist.productIds);
 
-  const originalPrice = (
-    product.price /
-    (1 - (product.discountPercentage || 0) / 100)
-  ).toFixed(2);
+  const originalPrice = (product.price / (1 - (product.discountPercentage || 0) / 100)).toFixed(2);
 
   const handleEditSubmit = (updatedData) => {
     if (onEdit) onEdit(product.id, updatedData);
+  };
+  const handleCart = async () => {
+    if (user?.role !== 'customer') return navigate('/login');
+    await dispatch(addToCart({ userId: user.id, product }))
+      .unwrap()
+      .catch(() => {});
+  };
+  const handleWishlist = async () => {
+    if (user?.role !== 'customer') return navigate('/login');
+    await dispatch(toggleWishlistProduct({ userId: user.id, productId: product.id }))
+      .unwrap()
+      .catch(() => {});
   };
 
   return (
@@ -53,15 +71,29 @@ export default function Product({ product, onDelete, onEdit, canManage = false }
             </button>
           </div>
         )}
+        {!canManage && user?.role === 'customer' && (
+          <button
+            onClick={handleWishlist}
+            aria-label="Toggle wishlist"
+            className={`absolute top-3 end-3 z-10 p-2 rounded-full shadow ${productIds.includes(product.id) ? 'bg-red-500 text-white' : 'bg-white text-gray-700'}`}
+          >
+            <FontAwesomeIcon icon={faHeart} />
+          </button>
+        )}
 
         <div className="relative aspect-square w-full bg-gray-50 overflow-hidden flex items-center justify-center p-4">
           <img
             src={
               product.thumbnail ||
               (product.images && product.images[0]) ||
-              "https://via.placeholder.com/150"
+              'https://via.placeholder.com/150'
             }
             alt={product.title}
+            onError={(event) => {
+              event.currentTarget.onerror = null;
+              event.currentTarget.src =
+                'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="300" height="300"%3E%3Crect width="100%25" height="100%25" fill="%23f3f4f6"/%3E%3Ctext x="50%25" y="50%25" dominant-baseline="middle" text-anchor="middle" fill="%236b7280" font-family="Arial"%3EImage unavailable%3C/text%3E%3C/svg%3E';
+            }}
             className="w-full h-full object-contain group-hover:scale-108 transition-transform duration-500 ease-out"
           />
         </div>
@@ -73,15 +105,18 @@ export default function Product({ product, onDelete, onEdit, canManage = false }
                 {product.brand}
               </span>
               <span
-                className={`font-medium ${product.availabilityStatus === "In Stock" ? "text-emerald-600" : "text-amber-600"}`}
+                className={`font-medium ${product.availabilityStatus === 'In Stock' ? 'text-emerald-600' : 'text-amber-600'}`}
               >
-                {product.availabilityStatus || "In Stock"}
+                {product.availabilityStatus || 'In Stock'}
               </span>
             </div>
 
-            <h3 className="font-semibold text-gray-800 text-base line-clamp-1 group-hover:text-blue-600 transition-colors">
+            <Link
+              to={`/products/${product.id}`}
+              className="font-semibold text-gray-800 text-base line-clamp-1 group-hover:text-blue-600 transition-colors"
+            >
               {product.title}
-            </h3>
+            </Link>
 
             <p className="text-gray-500 text-xs line-clamp-2 leading-relaxed">
               {product.description}
@@ -92,9 +127,7 @@ export default function Product({ product, onDelete, onEdit, canManage = false }
             <div className="flex items-center justify-between text-xs">
               <div className="flex items-center gap-1 text-amber-400">
                 <FontAwesomeIcon icon={faStar} />
-                <span className="font-bold text-gray-700 ml-1">
-                  {product.rating || 0}
-                </span>
+                <span className="font-bold text-gray-700 ml-1">{product.rating || 0}</span>
               </div>
               <span className="text-gray-400 text-[11px]">
                 ({product.reviews?.length || 0} reviews)
@@ -104,17 +137,14 @@ export default function Product({ product, onDelete, onEdit, canManage = false }
             <div className="flex items-center justify-between pt-1">
               <div className="flex flex-col">
                 {product.discountPercentage > 0 && (
-                  <span className="text-xs text-gray-400 line-through">
-                    ${originalPrice}
-                  </span>
+                  <span className="text-xs text-gray-400 line-through">${originalPrice}</span>
                 )}
-                <span className="text-xl font-bold text-gray-900">
-                  ${product.price}
-                </span>
+                <span className="text-xl font-bold text-gray-900">${product.price}</span>
               </div>
 
               <button
-                onClick={() => alert(`Added ${product.title} to cart!`)}
+                onClick={handleCart}
+                disabled={product.stock < 1 || canManage}
                 className="bg-black hover:bg-gray-800 text-white p-3 rounded-xl transition-all duration-200 active:scale-95 flex items-center justify-center gap-2 text-sm font-medium"
               >
                 <FontAwesomeIcon icon={faShoppingCart} />

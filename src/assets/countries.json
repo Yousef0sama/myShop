@@ -30,7 +30,11 @@
   { "name": "Botswana", "code": "BW", "nameAr": "بوتسوانا" },
   { "name": "Bouvet Island", "code": "BV", "nameAr": "جزيرة بوفيه" },
   { "name": "Brazil", "code": "BR", "nameAr": "البرازيل" },
-  { "name": "British Indian Ocean Territory", "code": "IO", "nameAr": "إقليم المحيط الهندي البريطاني" },
+  {
+    "name": "British Indian Ocean Territory",
+    "code": "IO",
+    "nameAr": "إقليم المحيط الهندي البريطاني"
+  },
   { "name": "Brunei Darussalam", "code": "BN", "nameAr": "بروناي" },
   { "name": "Bulgaria", "code": "BG", "nameAr": "بلغاريا" },
   { "name": "Burkina Faso", "code": "BF", "nameAr": "بوركينا فاسو" },
@@ -49,7 +53,11 @@
   { "name": "Colombia", "code": "CO", "nameAr": "كولومبيا" },
   { "name": "Comoros", "code": "KM", "nameAr": "جزر القمر" },
   { "name": "Congo", "code": "CG", "nameAr": "الكونغو" },
-  { "name": "Congo, The Democratic Republic of the", "code": "CD", "nameAr": "جمهورية الكونغو الديمقراطية" },
+  {
+    "name": "Congo, The Democratic Republic of the",
+    "code": "CD",
+    "nameAr": "جمهورية الكونغو الديمقراطية"
+  },
   { "name": "Cook Islands", "code": "CK", "nameAr": "جزر كوك" },
   { "name": "Costa Rica", "code": "CR", "nameAr": "كوستاريكا" },
   { "name": "Cote D'Ivoire", "code": "CI", "nameAr": "ساحل العاج" },
@@ -93,7 +101,11 @@
   { "name": "Guinea-Bissau", "code": "GW", "nameAr": "غينيا بيساو" },
   { "name": "Guyana", "code": "GY", "nameAr": "غويانا" },
   { "name": "Haiti", "code": "HT", "nameAr": "هايتي" },
-  { "name": "Heard Island and Mcdonald Islands", "code": "HM", "nameAr": "جزيرة هيرد وجزر ماكدونالد" },
+  {
+    "name": "Heard Island and Mcdonald Islands",
+    "code": "HM",
+    "nameAr": "جزيرة هيرد وجزر ماكدونالد"
+  },
   { "name": "Holy See (Vatican City State)", "code": "VA", "nameAr": "الفاتيكان" },
   { "name": "Honduras", "code": "HN", "nameAr": "هندوراس" },
   { "name": "Hong Kong", "code": "HK", "nameAr": "هونغ كونغ" },
@@ -128,7 +140,11 @@
   { "name": "Lithuania", "code": "LT", "nameAr": "ليتوانيا" },
   { "name": "Luxembourg", "code": "LU", "nameAr": "لوكسمبورغ" },
   { "name": "Macao", "code": "MO", "nameAr": "ماكاو" },
-  { "name": "Macedonia, The Former Yugoslav Republic of", "code": "MK", "nameAr": "مقدونيا الشمالية" },
+  {
+    "name": "Macedonia, The Former Yugoslav Republic of",
+    "code": "MK",
+    "nameAr": "مقدونيا الشمالية"
+  },
   { "name": "Madagascar", "code": "MG", "nameAr": "مدغشقر" },
   { "name": "Malawi", "code": "MW", "nameAr": "مالاوي" },
   { "name": "Malaysia", "code": "MY", "nameAr": "ماليزيا" },
@@ -141,7 +157,11 @@
   { "name": "Mauritius", "code": "MU", "nameAr": "موريشيوس" },
   { "name": "Mayotte", "code": "YT", "nameAr": "مايوت" },
   { "name": "Mexico", "code": "MX", "nameAr": "المكسيك" },
-  { "name": "Micronesia, Federated States of", "code": "FM", "nameAr": "ولايات ميكرونيزيا المتحدة" },
+  {
+    "name": "Micronesia, Federated States of",
+    "code": "FM",
+    "nameAr": "ولايات ميكرونيزيا المتحدة"
+  },
   { "name": "Moldova, Republic of", "code": "MD", "nameAr": "مولدوفا" },
   { "name": "Monaco", "code": "MC", "nameAr": "موناكو" },
   { "name": "Mongolia", "code": "MN", "nameAr": "منغوليا" },
@@ -200,7 +220,11 @@
   { "name": "Solomon Islands", "code": "SB", "nameAr": "جزر سليمان" },
   { "name": "Somalia", "code": "SO", "nameAr": "الصومال" },
   { "name": "South Africa", "code": "ZA", "nameAr": "جنوب أفريقيا" },
-  { "name": "South Georgia and the South Sandwich Islands", "code": "GS", "nameAr": "جورجيا الجنوبية وجزر ساندويتش الجنوبية" },
+  {
+    "name": "South Georgia and the South Sandwich Islands",
+    "code": "GS",
+    "nameAr": "جورجيا الجنوبية وجزر ساندويتش الجنوبية"
+  },
   { "name": "Spain", "code": "ES", "nameAr": "إسبانيا" },
   { "name": "Sri Lanka", "code": "LK", "nameAr": "سريلانكا" },
   { "name": "Sudan", "code": "SD", "nameAr": "السودان" },
@@ -229,7 +253,11 @@
   { "name": "United Arab Emirates", "code": "AE", "nameAr": "الإمارات العربية المتحدة" },
   { "name": "United Kingdom", "code": "GB", "nameAr": "المملكة المتحدة" },
   { "name": "United States", "code": "US", "nameAr": "الولايات المتحدة" },
-  { "name": "United States Minor Outlying Islands", "code": "UM", "nameAr": "جزر الولايات المتحدة الصغيرة النائية" },
+  {
+    "name": "United States Minor Outlying Islands",
+    "code": "UM",
+    "nameAr": "جزر الولايات المتحدة الصغيرة النائية"
+  },
   { "name": "Uruguay", "code": "UY", "nameAr": "أوروغواي" },
   { "name": "Uzbekistan", "code": "UZ", "nameAr": "أوزبكستان" },
   { "name": "Vanuatu", "code": "VU", "nameAr": "فانواتو" },

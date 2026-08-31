@@ -17,6 +17,7 @@ export const ENDPOINTS = {
 
   // * E-commerce cart & order processing routes
   CARTS: '/carts',
+  WISHLISTS: '/wishList',
   ORDERS: '/orders',
 
   // * Feedback, promotional, and dynamic content routes

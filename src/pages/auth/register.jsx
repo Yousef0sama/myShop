@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { 
-  faUser, 
-  faEnvelope, 
-  faLock, 
-  faPhone, 
-  faUserShield 
+import {
+  faUser,
+  faEnvelope,
+  faLock,
+  faPhone,
+  faUserShield,
 } from '@fortawesome/free-solid-svg-icons';
 
 import { registerUser, clearError } from '../../store/slices/authSlice';

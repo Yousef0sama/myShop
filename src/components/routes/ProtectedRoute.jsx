@@ -8,7 +8,7 @@ const ProtectedRoute = ({ allowedRoles }) => {
   const location = useLocation();
 
   // ! 1. Redirect unauthenticated users to login and preserve the target location state
-  if (!token) {
+  if (!token || user?.isDeleted || user?.isRestricted) {
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 

@@ -69,7 +69,9 @@ const SlideButton = ({
       </div>
 
       {/* ? External descriptive text label container */}
-      {label && <span className="ms-3 text-sm font-medium text-gray-700 dark:text-gray-300">{label}</span>}
+      {label && (
+        <span className="ms-3 text-sm font-medium text-gray-700 dark:text-gray-300">{label}</span>
+      )}
     </label>
   );
 };

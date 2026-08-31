@@ -53,7 +53,7 @@ export default function CardsTab({ user }) {
   // * Input change handler with Formats applied
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    let formattedValue = value; 
+    let formattedValue = value;
     if (name === 'cardNumber') {
       formattedValue = formatCardNumber(value);
     } else if (name === 'expiry') {
@@ -96,12 +96,14 @@ export default function CardsTab({ user }) {
 
   // ! Remove existing card handler via the API
   const handleDeleteCard = (cardId) => {
-    dispatch(deleteCard(cardId)).unwrap().catch((err) => {
-      setAlertConfig({
-        type: 'error',
-        message: typeof err === 'string' ? err : t('errors.deleteCardFailed'),
+    dispatch(deleteCard(cardId))
+      .unwrap()
+      .catch((err) => {
+        setAlertConfig({
+          type: 'error',
+          message: typeof err === 'string' ? err : t('errors.deleteCardFailed'),
+        });
       });
-    });
   };
 
   return (
@@ -169,9 +171,9 @@ export default function CardsTab({ user }) {
               {/* ! Quick Delete Action Trigger */}
               <Button
                 onClick={() => handleDeleteCard(card.id)}
-                size='sm'
-                variant='danger'
-                className='absolute top-2 end-8'
+                size="sm"
+                variant="danger"
+                className="absolute top-2 end-8"
                 title={t('deleteCard')}
               >
                 <FontAwesomeIcon icon={faTrashAlt} className="text-xs" />
@@ -185,12 +187,9 @@ export default function CardsTab({ user }) {
       {isAddModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs animate-in fade-in duration-200">
           <div className="w-full max-w-md bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden border border-gray-100 dark:border-gray-700">
-            
             {/* Modal Top Header */}
             <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 dark:border-gray-700">
-              <h3 className="text-lg font-bold text-gray-900 dark:text-white">
-                {t('addNewCard')}
-              </h3>
+              <h3 className="text-lg font-bold text-gray-900 dark:text-white">{t('addNewCard')}</h3>
               <button
                 onClick={() => setIsAddModalOpen(false)}
                 className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors"
@@ -266,7 +265,6 @@ export default function CardsTab({ user }) {
                 </Button>
               </div>
             </form>
-
           </div>
         </div>
       )}

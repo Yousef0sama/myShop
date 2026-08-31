@@ -32,13 +32,17 @@ const Card = ({
     <div
       onClick={onClick}
       className={`rounded-2xl transition-all duration-200 ${variantStyles[variant] || variantStyles.default} ${
-        onClick ? 'cursor-pointer hover:shadow-md hover:border-blue-300 dark:hover:border-blue-500' : ''
+        onClick
+          ? 'cursor-pointer hover:shadow-md hover:border-blue-300 dark:hover:border-blue-500'
+          : ''
       } ${className}`}
       {...props}
     >
       {/* ? Optional custom structured title/subtitle header container */}
       {title && (
-        <header className={`border-b border-gray-100 dark:border-gray-700 ${paddingStyles[padding]}`}>
+        <header
+          className={`border-b border-gray-100 dark:border-gray-700 ${paddingStyles[padding]}`}
+        >
           <h3 className="text-xl font-bold text-gray-900 dark:text-white">{title}</h3>
           {subtitle && <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">{subtitle}</p>}
         </header>
@@ -49,7 +53,9 @@ const Card = ({
 
       {/* ? Optional card footer action container with subtle backdrop tint */}
       {footer && (
-        <footer className={`bg-gray-50/50 dark:bg-gray-900/30 border-t border-gray-100 dark:border-gray-700 rounded-b-2xl ${paddingStyles[padding]}`}>
+        <footer
+          className={`bg-gray-50/50 dark:bg-gray-900/30 border-t border-gray-100 dark:border-gray-700 rounded-b-2xl ${paddingStyles[padding]}`}
+        >
           {footer}
         </footer>
       )}

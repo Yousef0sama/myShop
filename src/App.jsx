@@ -13,7 +13,9 @@ import ProtectedRoute from './components/routes/ProtectedRoute';
 
 // * Lazy Loaded Page Views (Optimization)
 const Products = lazy(() => import('./pages/customer/products'));
+const ProductDetails = lazy(() => import('./pages/customer/productDetails'));
 const Cart = lazy(() => import('./pages/customer/cart'));
+const Checkout = lazy(() => import('./pages/customer/checkout'));
 const Wishlist = lazy(() => import('./pages/customer/wishlist'));
 const Inventory = lazy(() => import('./pages/seller/inventory'));
 const Earnings = lazy(() => import('./pages/seller/earnings'));
@@ -34,6 +36,7 @@ const router = createBrowserRouter([
       // * Public Routes (Accessible by anyone)
       { index: true, element: <Products /> },
       { path: 'products', element: <Products /> },
+      { path: 'products/:productId', element: <ProductDetails /> },
 
       // * Any Logged-in User (Customer, Seller, Admin)
       {
@@ -46,6 +49,7 @@ const router = createBrowserRouter([
         element: <ProtectedRoute allowedRoles={['customer']} />,
         children: [
           { path: 'cart', element: <Cart /> },
+          { path: 'checkout', element: <Checkout /> },
           { path: 'wishlist', element: <Wishlist /> },
         ],
       },

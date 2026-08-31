@@ -2,13 +2,22 @@ import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
 
-export default function ProductModal({ isOpen, onClose, onSubmit, initialData = null, title = 'Product' }) {
+export default function ProductModal({
+  isOpen,
+  onClose,
+  onSubmit,
+  initialData = null,
+  title = 'Product',
+}) {
   const [formData, setFormData] = useState({
     title: '',
     price: '',
     category: '',
     brand: '',
     description: '',
+    thumbnail: '',
+    stock: 0,
+    isActive: true,
   });
   useEffect(() => {
     if (initialData) {
@@ -18,9 +27,21 @@ export default function ProductModal({ isOpen, onClose, onSubmit, initialData = 
         category: initialData.category || '',
         brand: initialData.brand || '',
         description: initialData.description || '',
+        thumbnail: initialData.thumbnail || '',
+        stock: initialData.stock ?? 0,
+        isActive: initialData.isActive !== false,
       });
     } else {
-      setFormData({ title: '', price: '', category: '', brand: '', description: '' });
+      setFormData({
+        title: '',
+        price: '',
+        category: '',
+        brand: '',
+        description: '',
+        thumbnail: '',
+        stock: 0,
+        isActive: true,
+      });
     }
   }, [initialData, isOpen]);
 
@@ -30,7 +51,13 @@ export default function ProductModal({ isOpen, onClose, onSubmit, initialData = 
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
-      [name]: name === 'price' ? (value === '' ? '' : Number(value)) : value,
+      [name]: ['price', 'stock'].includes(name)
+        ? value === ''
+          ? ''
+          : Number(value)
+        : name === 'isActive'
+          ? e.target.checked
+          : value,
     }));
   };
 
@@ -43,7 +70,6 @@ export default function ProductModal({ isOpen, onClose, onSubmit, initialData = 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
       <div className="bg-white rounded-2xl p-6 w-full max-w-md shadow-2xl relative space-y-4 animate-in fade-in zoom-in duration-200">
-        
         <div className="flex justify-between items-center border-b pb-3">
           <h3 className="text-lg font-bold text-gray-900">{title}</h3>
           <button
@@ -79,6 +105,18 @@ export default function ProductModal({ isOpen, onClose, onSubmit, initialData = 
                 required
               />
             </div>
+            <div>
+              <label className="block text-xs font-semibold text-gray-700 mb-1">Stock</label>
+              <input
+                type="number"
+                min="0"
+                name="stock"
+                value={formData.stock}
+                onChange={handleInputChange}
+                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"
+                required
+              />
+            </div>
 
             <div>
               <label className="block text-xs font-semibold text-gray-700 mb-1">Brand</label>
@@ -104,6 +142,25 @@ export default function ProductModal({ isOpen, onClose, onSubmit, initialData = 
               required
             />
           </div>
+          <div>
+            <label className="block text-xs font-semibold text-gray-700 mb-1">Image URL</label>
+            <input
+              type="url"
+              name="thumbnail"
+              value={formData.thumbnail}
+              onChange={handleInputChange}
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"
+            />
+          </div>
+          <label className="flex gap-2 text-sm text-gray-700">
+            <input
+              type="checkbox"
+              name="isActive"
+              checked={formData.isActive}
+              onChange={handleInputChange}
+            />
+            Visible in catalogue
+          </label>
 
           <div>
             <label className="block text-xs font-semibold text-gray-700 mb-1">Description</label>
@@ -132,7 +189,6 @@ export default function ProductModal({ isOpen, onClose, onSubmit, initialData = 
             </button>
           </div>
         </form>
-
       </div>
     </div>
   );

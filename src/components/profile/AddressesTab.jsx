@@ -135,12 +135,14 @@ export default function AddressesTab({ userId }) {
 
   // ! Delete address handler via the API
   const handleDeleteAddress = (addressId) => {
-    dispatch(deleteAddress(addressId)).unwrap().catch((err) => {
-      setAlertConfig({
-        type: 'error',
-        message: typeof err === 'string' ? err : t('errors.deleteAddressFailed'),
+    dispatch(deleteAddress(addressId))
+      .unwrap()
+      .catch((err) => {
+        setAlertConfig({
+          type: 'error',
+          message: typeof err === 'string' ? err : t('errors.deleteAddressFailed'),
+        });
       });
-    });
   };
 
   return (
@@ -161,9 +163,7 @@ export default function AddressesTab({ userId }) {
           <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">
             {t('addressesTitle')}
           </h2>
-          <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-            {t('addressesSubtitle')}
-          </p>
+          <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">{t('addressesSubtitle')}</p>
         </div>
 
         <Button
@@ -189,9 +189,7 @@ export default function AddressesTab({ userId }) {
             icon={faMapMarkerAlt}
             className="text-4xl text-gray-300 dark:text-gray-600 mb-3"
           />
-          <p className="text-gray-500 dark:text-gray-400 font-medium">
-            {t('noAddresses')}
-          </p>
+          <p className="text-gray-500 dark:text-gray-400 font-medium">{t('noAddresses')}</p>
         </div>
       ) : (
         /* Addresses Grid List */
@@ -209,7 +207,10 @@ export default function AddressesTab({ userId }) {
                   </span>
                 )}
                 <h3 className="font-semibold text-lg text-gray-900 dark:text-white flex items-center gap-2">
-                  <FontAwesomeIcon icon={faGlobe} className="text-blue-600 dark:text-blue-400 text-sm" />
+                  <FontAwesomeIcon
+                    icon={faGlobe}
+                    className="text-blue-600 dark:text-blue-400 text-sm"
+                  />
                   {addr.country} - {addr.state}
                 </h3>
                 <p className="text-sm text-gray-600 dark:text-gray-300 mt-1">
@@ -243,7 +244,6 @@ export default function AddressesTab({ userId }) {
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs animate-in fade-in duration-200">
           <div className="w-full max-w-md bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden border border-gray-100 dark:border-gray-700">
-            
             {/* Modal Header */}
             <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 dark:border-gray-700">
               <h3 className="text-lg font-bold text-gray-900 dark:text-white">
@@ -334,7 +334,6 @@ export default function AddressesTab({ userId }) {
                 </Button>
               </div>
             </form>
-
           </div>
         </div>
       )}

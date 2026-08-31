@@ -2,7 +2,7 @@ import axios from 'axios';
 
 // * Create a base Axios instance for handling global HTTP requests
 const api = axios.create({
-  baseURL: 'http://localhost:3001',
+  baseURL: process.env.REACT_APP_API_URL || 'http://localhost:3001',
   headers: {
     'Content-Type': 'application/json',
   },
@@ -12,7 +12,12 @@ const api = axios.create({
 api.interceptors.request.use(
   (config) => {
     // ? Retrieve stored authentication data from LocalStorage
-    const authData = JSON.parse(localStorage.getItem('authData'));
+    let authData = null;
+    try {
+      authData = JSON.parse(localStorage.getItem('authData') || 'null');
+    } catch {
+      localStorage.removeItem('authData');
+    }
 
     // json-server-auth returns the JWT key as "accessToken"
     if (authData?.accessToken) {
@@ -35,7 +40,9 @@ api.interceptors.response.use(
       error.message ||
       'An unexpected error occurred while connecting to the server';
 
-    return Promise.reject(new Error(typeof message === 'string' ? message : 'Authentication error'));
+    return Promise.reject(
+      new Error(typeof message === 'string' ? message : 'Authentication error')
+    );
   }
 );
 

@@ -3,12 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars, faTimes } from '@fortawesome/free-solid-svg-icons';
 
 // * Fully Responsive Full-Height Sidebar
-const Sidebar = ({
-  title,
-  subtitle,
-  children,
-  className = '',
-}) => {
+const Sidebar = ({ title, subtitle, children, className = '' }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const toggleSidebar = () => setIsOpen((prev) => !prev);
@@ -41,14 +36,10 @@ const Sidebar = ({
         {(title || subtitle) && (
           <div className="hidden md:block pb-3 px-2 border-b border-gray-100 dark:border-gray-800">
             {title && (
-              <h2 className="text-lg font-bold text-gray-900 dark:text-white truncate">
-                {title}
-              </h2>
+              <h2 className="text-lg font-bold text-gray-900 dark:text-white truncate">{title}</h2>
             )}
             {subtitle && (
-              <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5 truncate">
-                {subtitle}
-              </p>
+              <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5 truncate">{subtitle}</p>
             )}
           </div>
         )}
