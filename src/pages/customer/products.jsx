@@ -67,75 +67,110 @@ export default function Products() {
       label: typeof cat === 'string' ? cat : cat.name,
     })),
   ];
+  const hasActiveFilters = Boolean(
+    searchTerm || selectedCategory || availability || maxPrice || sortBy !== 'default'
+  );
+  const clearFilters = () => {
+    setSearchTerm('');
+    setSelectedCategory('');
+    setAvailability('');
+    setMaxPrice('');
+    setSortBy('default');
+  };
 
   return (
     <div className="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8 w-full">
       {/* ! Toast notification for API errors */}
       {error && <Alert type="error" variant="toast" message={error} />}
 
-      {/* * Header: Search and Category Filter */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 sm:items-end gap-4 mb-6">
-        <div className="flex-1">
-          <Input
-            label={t('searchProducts')}
-            type="text"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            placeholder={t('searchProducts')}
-            icon={faSearch}
-          />
+      {/* * Catalogue search and filter controls */}
+      <section
+        aria-label={t('productFilters')}
+        className="mb-6 rounded-2xl border border-gray-200 bg-gray-50/80 shadow-sm dark:border-gray-700 dark:bg-gray-900/70"
+      >
+        <div className="flex flex-col gap-3 border-b border-gray-200 px-4 py-4 dark:border-gray-800 sm:flex-row sm:items-center sm:justify-between sm:px-5">
+          <div className="flex items-start gap-3">
+              <h1 className="font-bold text-gray-900 dark:text-white">{t('productFilters')}</h1>
+          </div>
+          {hasActiveFilters && (
+            <button
+              type="button"
+              onClick={clearFilters}
+              className="self-start rounded-lg px-3 py-2 text-sm font-semibold text-blue-600 transition-colors hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:text-blue-400 dark:hover:bg-blue-500/10 sm:self-auto"
+            >
+              {t('clearFilters')}
+            </button>
+          )}
         </div>
 
-        <div className="w-full sm:w-64">
-          <Select
-            label={t('allCategories')}
-            name="category"
-            value={selectedCategory}
-            onChange={(e) => setSelectedCategory(e.target.value)}
-            options={categoryOptions}
-          />
-        </div>
-        <div>
-          <Select
-            label="Availability"
-            name="availability"
-            value={availability}
-            onChange={(e) => setAvailability(e.target.value)}
-            options={[
-              { value: '', label: 'All stock' },
-              { value: 'in-stock', label: 'In stock' },
-              { value: 'out-of-stock', label: 'Out of stock' },
-            ]}
-          />
-        </div>
-        <div>
-          <Input
-            label="Maximum price (EGP)"
-            type="number"
-            value={maxPrice}
-            onChange={(e) => setMaxPrice(e.target.value)}
-            min="0"
-          />
-        </div>
-        <div>
-          <Select
-            label="Sort"
-            name="sort"
-            value={sortBy}
-            onChange={(e) => setSortBy(e.target.value)}
-            options={[
-              { value: 'default', label: 'Recommended' },
-              { value: 'low-high', label: 'Price: low to high' },
-              { value: 'high-low', label: 'Price: high to low' },
-              { value: 'title', label: 'Name' },
-            ]}
-          />
-        </div>
-      </div>
+        <div className="grid grid-cols-1 gap-4 p-4 sm:grid-cols-2 sm:items-end sm:p-5 lg:grid-cols-5">
+          <div className="min-w-0 [&_label]:mb-1.5 [&_label]:text-xs [&_label]:font-semibold [&_label]:text-gray-600 dark:[&_label]:text-gray-300">
+            <Input
+              label={t('searchProducts')}
+              type="text"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              placeholder={t('searchProducts')}
+              icon={faSearch}
+              className="border-gray-200 py-2.5 shadow-none hover:border-gray-300 dark:border-gray-700"
+            />
+          </div>
 
-      <p className="mb-4 text-sm text-gray-500 dark:text-gray-400">
-        {filteredProducts.length} products found
-      </p>
+          <div className="min-w-0 [&_label]:mb-1.5 [&_label]:text-xs [&_label]:font-semibold [&_label]:text-gray-600 dark:[&_label]:text-gray-300">
+            <Select
+              label={t('allCategories')}
+              name="category"
+              value={selectedCategory}
+              onChange={(e) => setSelectedCategory(e.target.value)}
+              options={categoryOptions}
+              className="border-gray-200 py-2.5 shadow-none hover:border-gray-300 dark:border-gray-700"
+            />
+          </div>
+          <div className="min-w-0 [&_label]:mb-1.5 [&_label]:text-xs [&_label]:font-semibold [&_label]:text-gray-600 dark:[&_label]:text-gray-300">
+            <Select
+              label={t('availability')}
+              name="availability"
+              value={availability}
+              onChange={(e) => setAvailability(e.target.value)}
+              options={[
+                { value: '', label: t('allStock') },
+                { value: 'in-stock', label: t('inStock') },
+                { value: 'out-of-stock', label: t('outOfStock') },
+              ]}
+              className="border-gray-200 py-2.5 shadow-none hover:border-gray-300 dark:border-gray-700"
+            />
+          </div>
+          <div className="min-w-0 [&_label]:mb-1.5 [&_label]:text-xs [&_label]:font-semibold [&_label]:text-gray-600 dark:[&_label]:text-gray-300">
+            <Input
+              label={t('maximumPrice')}
+              type="number"
+              value={maxPrice}
+              onChange={(e) => setMaxPrice(e.target.value)}
+              min="0"
+              className="border-gray-200 py-2.5 shadow-none hover:border-gray-300 dark:border-gray-700"
+            />
+          </div>
+          <div className="min-w-0 [&_label]:mb-1.5 [&_label]:text-xs [&_label]:font-semibold [&_label]:text-gray-600 dark:[&_label]:text-gray-300">
+            <Select
+              label={t('sort')}
+              name="sort"
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value)}
+              options={[
+                { value: 'default', label: t('recommended') },
+                { value: 'low-high', label: t('priceLowHigh') },
+                { value: 'high-low', label: t('priceHighLow') },
+                { value: 'title', label: t('name') },
+              ]}
+              className="border-gray-200 py-2.5 shadow-none hover:border-gray-300 dark:border-gray-700"
+            />
+          </div>
+        </div>
+
+        <div className="border-t border-gray-200 bg-white/70 px-4 py-3 text-sm text-gray-500 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-400 sm:px-5">
+          {t('productsFound', { count: filteredProducts.length })}
+        </div>
+      </section>
 
       {/* * Loading State */}
       {initialLoading || status === 'loading' ? (

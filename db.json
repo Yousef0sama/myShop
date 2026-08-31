@@ -88,7 +88,7 @@
       "category": "electronics",
       "brand": "Sonic",
       "thumbnail": "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=700&q=80",
-      "stock": 12,
+      "stock": 11,
       "isActive": true,
       "discountPercentage": 10
     },
@@ -101,7 +101,7 @@
       "category": "electronics",
       "brand": "KeyCraft",
       "thumbnail": "https://images.unsplash.com/photo-1587829741301-dc798b83add3?auto=format&fit=crop&w=700&q=80",
-      "stock": 8,
+      "stock": 6,
       "isActive": true,
       "discountPercentage": 0
     },
@@ -114,7 +114,7 @@
       "category": "fashion",
       "brand": "Roam",
       "thumbnail": "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?auto=format&fit=crop&w=700&q=80",
-      "stock": 20,
+      "stock": 18,
       "isActive": true,
       "discountPercentage": 15
     },
@@ -126,7 +126,7 @@
       "price": 720,
       "category": "home",
       "brand": "Luma",
-      "thumbnail": "https://images.unsplash.com/photo-1507473885765-e6ed057f782c?auto=format&fit=crop&w=700&q=80",
+      "thumbnail": "https://www.ikea.com/eg/en/images/products/svallet-work-lamp-dark-grey-white__1028313_ph177478_s5.jpg?f=u",
       "stock": 5,
       "isActive": true,
       "discountPercentage": 0
@@ -158,8 +158,22 @@
       "discountPercentage": 0
     }
   ],
-  "carts": [{ "id": 1, "userId": 1, "items": [{ "productId": 2, "quantity": 1, "price": 1850 }] }],
-  "wishList": [{ "id": 1, "userId": 1, "productIds": [1, 5] }],
+  "carts": [
+    {
+      "id": 1,
+      "userId": 1,
+      "items": []
+    }
+  ],
+  "wishList": [
+    {
+      "id": 1,
+      "userId": 1,
+      "productIds": [
+        1
+      ]
+    }
+  ],
   "orders": [
     {
       "id": 1,
@@ -179,8 +193,64 @@
       "discount": 0,
       "shipping": 60,
       "total": 1010,
-      "status": "shipped",
+      "status": "delivered",
       "createdAt": "2026-08-25T10:00:00.000Z"
+    },
+    {
+      "userId": 1,
+      "items": [
+        {
+          "productId": 2,
+          "title": "Mechanical Keyboard",
+          "quantity": 2,
+          "price": 1850,
+          "sellerId": 2
+        },
+        {
+          "productId": 1,
+          "title": "Wireless Noise-Cancelling Headphones",
+          "quantity": 1,
+          "price": 2499,
+          "sellerId": 2
+        },
+        {
+          "productId": 3,
+          "title": "Everyday Canvas Backpack",
+          "quantity": 1,
+          "price": 950,
+          "sellerId": 2
+        }
+      ],
+      "addressId": 1,
+      "paymentMethod": "cash_on_delivery",
+      "subtotal": 7149,
+      "discount": 0,
+      "shipping": 60,
+      "total": 7209,
+      "status": "cancelled",
+      "createdAt": "2026-08-31T13:27:55.358Z",
+      "id": 2
+    },
+    {
+      "userId": 1,
+      "items": [
+        {
+          "productId": 3,
+          "title": "Everyday Canvas Backpack",
+          "quantity": 1,
+          "price": 950,
+          "sellerId": 2
+        }
+      ],
+      "addressId": 1,
+      "paymentMethod": "card_1",
+      "subtotal": 950,
+      "discount": 0,
+      "shipping": 60,
+      "total": 1010,
+      "status": "pending",
+      "createdAt": "2026-08-31T13:53:47.656Z",
+      "id": 3
     }
   ],
   "reviews": [

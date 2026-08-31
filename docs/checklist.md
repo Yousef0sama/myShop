@@ -39,8 +39,6 @@ tested. Keep incomplete items as `[-]` when code exists but the full user flow i
 - [-] The login guard remembers the originally requested location, but the login page always redirects to `/` instead of returning there.
 - [x] Seed and document a usable admin account.
 - [-] Login and route guards reject restricted/soft-deleted accounts in the frontend; server-side authorization still needs a production backend.
-- [ ] Implement confirmation email.
-- [ ] Implement Google/social-media login as a real bonus integration, or label it as a mock.
 
 ### Profile and payment details
 
@@ -51,7 +49,6 @@ tested. Keep incomplete items as `[-]` when code exists but the full user flow i
 - [x] Add and delete masked saved-card records; the UI does not persist the full card number or CVV.
 - [-] Password-change UI exists, but it does not verify the entered current password and needs a backend-safe implementation.
 - [-] Default-address updates are sent as separate client requests, so the API does not guarantee exactly one default address under concurrent updates.
-- [ ] Validate card number length, expiry date, and CVV before saving card metadata.
 - [ ] Add profile-level loading, success, and error behavior consistently across all tabs.
 
 ### Wishlist, history, and reviews
@@ -79,6 +76,7 @@ tested. Keep incomplete items as `[-]` when code exists but the full user flow i
 - [-] Product details and reviews are implemented; full browser flow still needs manual verification.
 - [x] Maximum-price filter is implemented.
 - [x] Availability/stock filter and sort controls are implemented.
+- [x] Product filters use a responsive, localized filter panel with a reset action; dropdown menus layer above catalogue cards.
 - [ ] Add comprehensive input validation for product creation/editing.
 - [-] Checkout decrements stock after creating an order; a real backend transaction is needed for concurrency-safe stock handling.
 
@@ -94,7 +92,6 @@ tested. Keep incomplete items as `[-]` when code exists but the full user flow i
 - [-] Cart line items, empty state, subtotal, shipping, and total are implemented; discount is currently zero.
 - [-] Checkout screen supports address selection; full browser flow still needs manual verification.
 - [-] Course-demo payment options include saved card, cash on delivery, and mock wallet.
-- [ ] Add guest checkout as a bonus or explicitly exclude it from the MVP.
 - [ ] Apply promo code and discount logic as a bonus.
 
 ## 4. Order management
@@ -113,20 +110,16 @@ tested. Keep incomplete items as `[-]` when code exists but the full user flow i
 - [-] Saved-card metadata can be selected as a checkout payment option.
 - [-] Cash on Delivery is available as a demo checkout choice.
 - [-] Mock wallet payment is available as a demo checkout choice.
-- [ ] Implement a real Stripe, PayPal, or Razorpay integration only if backend, keys, and server-side payment verification are available.
-- [ ] Never store raw card numbers, CVVs, payment keys, or payment-provider secrets in `db.json` or the frontend.
-
+=
 ## 6. Admin panel
 
 - [x] Admin-only `/dashboard` route is protected by the frontend role guard.
-- [-] Dashboard page implements management tabs; full browser flow still needs manual verification.
-- [-] Dashboard statistics display users, products, orders, sales, and low-stock products.
+- [-] Dashboard page has responsive management tabs, operational overview cards, recent-order activity, attention queues, and quick actions; full browser flow still needs manual verification.
+- [-] Dashboard statistics display users, products, orders, sales, and low-stock products with clearer visual hierarchy; full browser flow still needs manual verification.
 - [-] User list and search are implemented.
 - [-] Soft-delete/restrict and restore actions are implemented through flags; server-side enforcement needs a production backend.
 - [-] Product and category management views are implemented; product assignment to a specific seller needs refinement.
 - [-] Admin order status management is implemented; shipping detail and cancellation rules need refinement.
-- [ ] Manage promo codes/discounts as a bonus.
-- [ ] Manage homepage banners/content as a bonus.
 
 ## 7. Seller/vendor management
 
