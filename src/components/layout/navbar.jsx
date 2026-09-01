@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -24,6 +24,14 @@ import SlideButton from '../UI/SlideButton';
 
 export default function Navbar() {
   const { t, currentLanguage } = useAppTranslation('common');
+
+  // * Shared className generator: highlights the active route with a prominent color
+  const navLinkClass = ({ isActive }) =>
+    `font-medium transition-colors ${
+      isActive
+        ? 'text-blue-600 dark:text-blue-400'
+        : 'text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400'
+    }`;
 
   // ? Local UI state for visibility toggles
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -85,55 +93,55 @@ export default function Navbar() {
             {/* Desktop Navigation Links based on Roles */}
             <div className="hidden md:flex items-center gap-6">
               {isAdmin && (
-                <Link
+                <NavLink
                   to="/dashboard"
-                  className="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-medium transition-colors"
+                  className={navLinkClass}
                 >
                   {t('dashboard')}
-                </Link>
+                </NavLink>
               )}
 
               {isCustomer && (
                 <>
-                  <Link
+                  <NavLink
                     to="/products"
-                    className="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-medium transition-colors"
+                    className={navLinkClass}
                   >
                     {t('products')}
-                  </Link>
-                  <Link
+                  </NavLink>
+                  <NavLink
                     to="/wishlist"
-                    className="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-medium transition-colors"
+                    className={navLinkClass}
                   >
                     {t('wishList')}
-                  </Link>
+                  </NavLink>
                 </>
               )}
 
               {isSeller && (
                 <>
-                  <Link
+                  <NavLink
                     to="/inventory"
-                    className="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-medium transition-colors"
+                    className={navLinkClass}
                   >
                     {t('inventory')}
-                  </Link>
-                  <Link
+                  </NavLink>
+                  <NavLink
                     to="/earnings"
-                    className="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-medium transition-colors"
+                    className={navLinkClass}
                   >
                     {t('earnings')}
-                  </Link>
+                  </NavLink>
                 </>
               )}
 
               {(isCustomer || isSeller) && (
-                <Link
+                <NavLink
                   to="/orders"
-                  className="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-medium transition-colors"
+                  className={navLinkClass}
                 >
                   {t('orders')}
-                </Link>
+                </NavLink>
               )}
             </div>
           </div>
@@ -291,61 +299,73 @@ export default function Navbar() {
         <div className="md:hidden border-t border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-900 px-4 pt-3 pb-5 space-y-4">
           {/* Mobile Navigation Links based on Roles */}
           {isAdmin && (
-            <Link
+            <NavLink
               to="/dashboard"
               onClick={() => setIsMobileMenuOpen(false)}
-              className="block text-gray-700 dark:text-gray-200 hover:text-blue-600 font-medium"
+              className={({ isActive }) =>
+                `block font-medium ${isActive ? 'text-blue-600 dark:text-blue-400' : 'text-gray-700 dark:text-gray-200 hover:text-blue-600'}`
+              }
             >
               {t('dashboard')}
-            </Link>
+            </NavLink>
           )}
 
           {isCustomer && (
             <>
-              <Link
+              <NavLink
                 to="/products"
                 onClick={() => setIsMobileMenuOpen(false)}
-                className="block text-gray-700 dark:text-gray-200 hover:text-blue-600 font-medium"
+                className={({ isActive }) =>
+                  `block font-medium ${isActive ? 'text-blue-600 dark:text-blue-400' : 'text-gray-700 dark:text-gray-200 hover:text-blue-600'}`
+                }
               >
                 {t('products')}
-              </Link>
-              <Link
+              </NavLink>
+              <NavLink
                 to="/wishlist"
                 onClick={() => setIsMobileMenuOpen(false)}
-                className="block text-gray-700 dark:text-gray-200 hover:text-blue-600 font-medium"
+                className={({ isActive }) =>
+                  `block font-medium ${isActive ? 'text-blue-600 dark:text-blue-400' : 'text-gray-700 dark:text-gray-200 hover:text-blue-600'}`
+                }
               >
                 {t('wishList')}
-              </Link>
+              </NavLink>
             </>
           )}
 
           {isSeller && (
             <>
-              <Link
+              <NavLink
                 to="/inventory"
                 onClick={() => setIsMobileMenuOpen(false)}
-                className="block text-gray-700 dark:text-gray-200 hover:text-blue-600 font-medium"
+                className={({ isActive }) =>
+                  `block font-medium ${isActive ? 'text-blue-600 dark:text-blue-400' : 'text-gray-700 dark:text-gray-200 hover:text-blue-600'}`
+                }
               >
                 {t('inventory')}
-              </Link>
-              <Link
+              </NavLink>
+              <NavLink
                 to="/earnings"
                 onClick={() => setIsMobileMenuOpen(false)}
-                className="block text-gray-700 dark:text-gray-200 hover:text-blue-600 font-medium"
+                className={({ isActive }) =>
+                  `block font-medium ${isActive ? 'text-blue-600 dark:text-blue-400' : 'text-gray-700 dark:text-gray-200 hover:text-blue-600'}`
+                }
               >
                 {t('earnings')}
-              </Link>
+              </NavLink>
             </>
           )}
 
           {(isCustomer || isSeller) && (
-            <Link
+            <NavLink
               to="/orders"
               onClick={() => setIsMobileMenuOpen(false)}
-              className="block text-gray-700 dark:text-gray-200 hover:text-blue-600 font-medium"
+              className={({ isActive }) =>
+                `block font-medium ${isActive ? 'text-blue-600 dark:text-blue-400' : 'text-gray-700 dark:text-gray-200 hover:text-blue-600'}`
+              }
             >
               {t('orders')}
-            </Link>
+            </NavLink>
           )}
 
           <hr className="border-gray-100 dark:border-gray-800" />
