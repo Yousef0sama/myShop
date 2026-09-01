@@ -50,10 +50,11 @@ uses the same-origin `/api/chat` function, so it does not need a public chat API
 Change the `server` script in `package.json` to:
 
 ```json
-"server": "json-server-auth db.json --port ${PORT:-3001}"
+"server": "json-server-auth db.json --host 0.0.0.0 --port ${PORT:-3001}"
 ```
 
-This uses Render's assigned `PORT` while continuing to use port `3001` locally.
+This binds to Render's public interface and uses its assigned `PORT`, while continuing to
+use port `3001` locally.
 
 ### Support direct React Router URLs
 
