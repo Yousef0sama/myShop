@@ -19,13 +19,14 @@ import {
 
 import { logout } from '../../store/slices/authSlice';
 import { toggleDarkMode, toggleLanguage } from '../../store/slices/uiSlice';
+import { fetchCart } from '../../store/slices/cartSlice';
+import { fetchWishlist } from '../../store/slices/wishlistSlice';
 import useAppTranslation from '../../hooks/useAppTranslation';
 import SlideButton from '../UI/SlideButton';
 
 export default function Navbar() {
   const { t, currentLanguage } = useAppTranslation('common');
 
-  // * Shared className generator: highlights the active route with a prominent color
   const navLinkClass = ({ isActive }) =>
     `font-medium transition-colors ${
       isActive
@@ -33,31 +34,37 @@ export default function Navbar() {
         : 'text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400'
     }`;
 
-  // ? Local UI state for visibility toggles
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
-
-  // ? DOM reference used to detect clicks outside the settings dropdown container
   const dropdownRef = useRef(null);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  // ? Extract UI settings, auth state, and cart items from Redux store
   const darkMode = useSelector((state) => state.ui.darkMode);
   const { token, user } = useSelector((state) => state.auth);
+
+  // * قراءة العناصر من الـ Store
   const cartItems = useSelector((state) => state.cart?.items || []);
+  const wishlistProductIds = useSelector((state) => state.wishlist?.productIds || []);
 
-  // * Calculate total aggregate item quantity stored in cart
+  // * هنا بقى السر: أول ما الـ App يعمل Refresh والـ user.id يكون موجود، بنعمل dispatch لفانكشن الفيتش عشان ترجع الداتا حتى بعد الـ Refresh
+  useEffect(() => {
+    if (user?.id) {
+      dispatch(fetchCart(user.id));
+      dispatch(fetchWishlist(user.id));
+    }
+  }, [dispatch, user?.id]);
+
+  // * حساب الأعداد
   const cartCount = cartItems.reduce((total, item) => total + (item.quantity || 1), 0);
+  const wishlistCount = wishlistProductIds.length;
 
-  // * Role-based checks (admin, seller, customer)
   const userRole = user?.role;
   const isAdmin = userRole === 'admin';
   const isSeller = userRole === 'seller';
   const isCustomer = userRole === 'customer';
 
-  // ! Dispatches auth logout action, closes active dropdowns, and redirects user to login view
   const handleLogout = () => {
     dispatch(logout());
     setIsSettingsOpen(false);
@@ -65,7 +72,6 @@ export default function Navbar() {
     navigate('/login');
   };
 
-  // * Event listener effect to close settings dropdown menu when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -80,7 +86,6 @@ export default function Navbar() {
     <nav className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 sticky top-0 z-40 shadow-sm transition-colors duration-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16 items-center">
-          {/* * Brand logo icon and main desktop navigation links */}
           <div className="flex items-center gap-8">
             <Link
               to="/"
@@ -90,29 +95,19 @@ export default function Navbar() {
               <span>{t('brand')}</span>
             </Link>
 
-            {/* Desktop Navigation Links based on Roles */}
             <div className="hidden md:flex items-center gap-6">
               {isAdmin && (
-                <NavLink
-                  to="/dashboard"
-                  className={navLinkClass}
-                >
+                <NavLink to="/dashboard" className={navLinkClass}>
                   {t('dashboard')}
                 </NavLink>
               )}
 
               {isCustomer && (
                 <>
-                  <NavLink
-                    to="/products"
-                    className={navLinkClass}
-                  >
+                  <NavLink to="/products" className={navLinkClass}>
                     {t('products')}
                   </NavLink>
-                  <NavLink
-                    to="/wishlist"
-                    className={navLinkClass}
-                  >
+                  <NavLink to="/wishlist" className={navLinkClass}>
                     {t('wishList')}
                   </NavLink>
                 </>
@@ -120,43 +115,37 @@ export default function Navbar() {
 
               {isSeller && (
                 <>
-                  <NavLink
-                    to="/inventory"
-                    className={navLinkClass}
-                  >
+                  <NavLink to="/inventory" className={navLinkClass}>
                     {t('inventory')}
                   </NavLink>
-                  <NavLink
-                    to="/earnings"
-                    className={navLinkClass}
-                  >
+                  <NavLink to="/earnings" className={navLinkClass}>
                     {t('earnings')}
                   </NavLink>
                 </>
               )}
 
               {(isCustomer || isSeller) && (
-                <NavLink
-                  to="/orders"
-                  className={navLinkClass}
-                >
+                <NavLink to="/orders" className={navLinkClass}>
                   {t('orders')}
                 </NavLink>
               )}
             </div>
           </div>
 
-          {/* * Desktop action controls */}
           <div className="hidden md:flex items-center gap-4">
-            {/* ? Wishlist & Cart icons (Rendered only for Customers) */}
             {isCustomer && (
               <>
                 <Link
                   to="/wishlist"
-                  className="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 p-2 transition-colors"
+                  className="relative text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 p-2 transition-colors"
                   title={t('wishList')}
                 >
                   <FontAwesomeIcon icon={faHeart} className="text-xl" />
+                  {wishlistCount > 0 && (
+                    <span className="absolute -top-1 -right-1 bg-red-600 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center font-bold">
+                      {wishlistCount}
+                    </span>
+                  )}
                 </Link>
                 <Link
                   to="/cart"
@@ -172,7 +161,6 @@ export default function Navbar() {
               </>
             )}
 
-            {/* * Settings trigger and dropdown menu */}
             <div className="relative" ref={dropdownRef}>
               <button
                 onClick={() => setIsSettingsOpen(!isSettingsOpen)}
@@ -185,16 +173,13 @@ export default function Navbar() {
                 />
               </button>
 
-              {/* ? Animated settings dropdown floating menu */}
               {isSettingsOpen && (
                 <div className="absolute end-0 mt-2 w-64 bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-xl shadow-lg py-3 px-4 z-50 space-y-4 animate-in fade-in slide-in-from-top-2 duration-200">
-                  {/* Preferences section for Dark Mode and Language toggles */}
                   <div className="space-y-3 pb-3 border-b border-gray-100 dark:border-gray-700">
                     <p className="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider">
                       {t('settings')}
                     </p>
 
-                    {/* Dark mode switch */}
                     <div className="flex items-center justify-between">
                       <span className="text-sm text-gray-700 dark:text-gray-200 font-medium">
                         {t('darkMode')}
@@ -207,7 +192,6 @@ export default function Navbar() {
                       />
                     </div>
 
-                    {/* Language switch */}
                     <div className="flex items-center justify-between">
                       <span className="text-sm text-gray-700 dark:text-gray-200 font-medium">
                         {t('language')}
@@ -221,7 +205,6 @@ export default function Navbar() {
                     </div>
                   </div>
 
-                  {/* Auth links inside desktop dropdown */}
                   <div className="space-y-2 pt-1">
                     {token ? (
                       <>
@@ -267,12 +250,16 @@ export default function Navbar() {
             </div>
           </div>
 
-          {/* ? Mobile control bar */}
           <div className="md:hidden flex items-center gap-2">
             {isCustomer && (
               <>
-                <Link to="/wishlist" className="text-gray-600 dark:text-gray-300 p-2">
+                <Link to="/wishlist" className="relative text-gray-600 dark:text-gray-300 p-2">
                   <FontAwesomeIcon icon={faHeart} className="text-lg" />
+                  {wishlistCount > 0 && (
+                    <span className="absolute -top-1 -right-1 bg-red-600 text-white text-xs w-4 h-4 rounded-full flex items-center justify-center font-bold">
+                      {wishlistCount}
+                    </span>
+                  )}
                 </Link>
                 <Link to="/cart" className="relative text-gray-600 dark:text-gray-300 p-2">
                   <FontAwesomeIcon icon={faShoppingCart} className="text-lg" />
@@ -294,10 +281,8 @@ export default function Navbar() {
         </div>
       </div>
 
-      {/* * Collapsible drawer menu for mobile view */}
       {isMobileMenuOpen && (
         <div className="md:hidden border-t border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-900 px-4 pt-3 pb-5 space-y-4">
-          {/* Mobile Navigation Links based on Roles */}
           {isAdmin && (
             <NavLink
               to="/dashboard"
@@ -370,7 +355,6 @@ export default function Navbar() {
 
           <hr className="border-gray-100 dark:border-gray-800" />
 
-          {/* Mobile preferences switches */}
           <div className="space-y-3">
             <div className="flex items-center justify-between">
               <span className="text-sm text-gray-700 dark:text-gray-200 font-medium">
@@ -398,7 +382,6 @@ export default function Navbar() {
 
           <hr className="border-gray-100 dark:border-gray-800" />
 
-          {/* Mobile auth action buttons */}
           {token ? (
             <div className="space-y-2">
               <Link
