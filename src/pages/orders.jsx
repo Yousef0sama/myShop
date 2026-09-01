@@ -1,9 +1,7 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { fetchOrders } from '../store/slices/ordersSlice';
-import Alert from '../components/UI/Alert';
 import Card from '../components/UI/Card';
 import Select from '../components/UI/Select';
 import Input from '../components/UI/Input';
@@ -13,10 +11,8 @@ const statuses = ['pending', 'confirmed', 'processing', 'shipped', 'delivered', 
 export default function Orders() {
   const { t } = useTranslation('orders');
   const dispatch = useDispatch();
-  const location = useLocation();
-
   const user = useSelector((state) => state.auth?.user);
-  const { items: ordersList, status, error } = useSelector((state) => state.orders);
+  const { items: ordersList, status } = useSelector((state) => state.orders);
 
   // Search and status filter state
   const [searchTerm, setSearchTerm] = useState('');
