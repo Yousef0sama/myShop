@@ -12,6 +12,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import Input from '../UI/Input';
 import Button from '../UI/Button';
+import useAppTranslation from '../../hooks/useAppTranslation';
 
 export default function ProductModal({
   isOpen,
@@ -20,6 +21,7 @@ export default function ProductModal({
   initialData = null,
   title = 'Product',
 }) {
+  const { t } = useAppTranslation('products');
   const [formData, setFormData] = useState({
     title: '',
     price: '',
@@ -101,11 +103,11 @@ export default function ProductModal({
         <form onSubmit={handleSubmit} className="space-y-4">
           {/* Title */}
           <Input
-            label="Title"
+            label={t('form.title')}
             name="title"
             value={formData.title}
             onChange={handleInputChange}
-            placeholder="Enter product title"
+            placeholder={t('form.titlePlaceholder')}
             icon={faHeading}
             required
           />
@@ -113,7 +115,7 @@ export default function ProductModal({
           <div className="grid grid-cols-2 gap-3">
             {/* Price */}
             <Input
-              label="Price"
+              label={t('form.price')}
               type="number"
               name="price"
               value={formData.price}
@@ -127,7 +129,7 @@ export default function ProductModal({
             
             {/* Discount Percentage */}
             <Input
-              label="Discount %"
+              label={t('form.discount')}
               type="number"
               name="discountPercentage"
               value={formData.discountPercentage}
@@ -143,7 +145,7 @@ export default function ProductModal({
           <div className="grid grid-cols-2 gap-3">
             {/* Stock */}
             <Input
-              label="Stock"
+              label={t('form.stock')}
               type="number"
               name="stock"
               value={formData.stock}
@@ -156,11 +158,11 @@ export default function ProductModal({
 
             {/* Brand */}
             <Input
-              label="Brand"
+              label={t('form.brand')}
               name="brand"
               value={formData.brand}
               onChange={handleInputChange}
-              placeholder="Enter brand"
+              placeholder={t('form.brandPlaceholder')}
               icon={faTrademark}
               required
             />
@@ -168,18 +170,18 @@ export default function ProductModal({
 
           {/* Category */}
           <Input
-            label="Category"
+            label={t('form.category')}
             name="category"
             value={formData.category}
             onChange={handleInputChange}
-            placeholder="Enter category"
+            placeholder={t('form.categoryPlaceholder')}
             icon={faFolder}
             required
           />
 
           {/* Image URL */}
           <Input
-            label="Image URL"
+            label={t('form.imageUrl')}
             type="url"
             name="thumbnail"
             value={formData.thumbnail}
@@ -197,20 +199,20 @@ export default function ProductModal({
               onChange={handleInputChange}
               className="rounded border-gray-300 dark:border-gray-700 text-blue-600 focus:ring-blue-500 w-4 h-4"
             />
-            Visible in catalogue
+            {t('form.visibleInCatalogue')}
           </label>
 
           {/* Description */}
           <div className="flex flex-col gap-1 w-full">
             <label htmlFor="description" className="text-sm font-medium text-gray-700 dark:text-gray-300">
-              Description
+              {t('form.description')}
             </label>
             <textarea
               id="description"
               name="description"
               value={formData.description}
               onChange={handleInputChange}
-              placeholder="Enter product description..."
+              placeholder={t('form.descriptionPlaceholder')}
               rows="3"
               className="w-full bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:border-blue-500 dark:focus:border-blue-400 focus:ring-blue-200 dark:focus:ring-blue-900/50 resize-none transition-all"
             />
@@ -224,14 +226,14 @@ export default function ProductModal({
               size="sm"
               onClick={onClose}
             >
-              Cancel
+              {t('form.cancel')}
             </Button>
             <Button
               type="submit"
               variant="primary"
               size="sm"
             >
-              Save
+              {t('form.save')}
             </Button>
           </div>
         </form>

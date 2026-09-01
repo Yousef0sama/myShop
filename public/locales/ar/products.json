@@ -27,5 +27,24 @@
   "removeFromWishlist": "إزالة من المفضلة",
   "imageUnavailable": "الصورة غير متاحة",
   "edit": "تعديل",
-  "delete": "حذف"
+  "delete": "حذف",
+  "editProduct": "تعديل المنتج",
+  "confirmDelete": "هل أنت متأكد من حذف هذا المنتج؟",
+  "form": {
+    "title": "العنوان",
+    "titlePlaceholder": "أدخل عنوان المنتج",
+    "price": "السعر",
+    "discount": "الخصم %",
+    "stock": "المخزون",
+    "brand": "العلامة التجارية",
+    "brandPlaceholder": "أدخل العلامة التجارية",
+    "category": "الفئة",
+    "categoryPlaceholder": "أدخل الفئة",
+    "imageUrl": "رابط الصورة",
+    "visibleInCatalogue": "ظاهر في الكتالوج",
+    "description": "الوصف",
+    "descriptionPlaceholder": "أدخل وصف المنتج...",
+    "cancel": "إلغاء",
+    "save": "حفظ"
+  }
 }

@@ -31,16 +31,9 @@ import Product from '../../components/product/product';
 import ProductModal from '../../components/modals/productModal';
 import Button from '../../components/UI/Button';
 import Alert from '../../components/UI/Alert';
+import useAppTranslation from '../../hooks/useAppTranslation';
 
 const statuses = ['pending', 'confirmed', 'processing', 'shipped', 'delivered', 'cancelled'];
-
-const tabs = [
-  { name: 'overview', label: 'Overview', icon: faChartLine },
-  { name: 'users', label: 'Users', icon: faUsers },
-  { name: 'categories', label: 'Categories', icon: faLayerGroup },
-  { name: 'products', label: 'Products', icon: faBoxOpen },
-  { name: 'orders', label: 'Orders', icon: faCartShopping },
-];
 
 const statusStyles = {
   pending: 'bg-amber-50 text-amber-700 ring-amber-600/20 dark:bg-amber-500/10 dark:text-amber-300',
@@ -54,29 +47,29 @@ const statusStyles = {
   cancelled: 'bg-rose-50 text-rose-700 ring-rose-600/20 dark:bg-rose-500/10 dark:text-rose-300',
 };
 
-const formatCurrency = (value) =>
-  new Intl.NumberFormat('en-EG', {
+const formatCurrency = (value, language) =>
+  new Intl.NumberFormat(language === 'ar' ? 'ar-EG' : 'en-EG', {
     style: 'currency',
     currency: 'EGP',
     maximumFractionDigits: 0,
   }).format(Number(value || 0));
 
-const StatusBadge = ({ status }) => (
+const StatusBadge = ({ status, t }) => (
   <span
     className={`inline-flex items-center rounded-full px-2.5 py-1 text-xs font-semibold capitalize ring-1 ring-inset ${
       statusStyles[status] || statusStyles.pending
     }`}
   >
-    {status}
+    {t(`statuses.${status}`)}
   </span>
 );
 
-const AccountStatusBadge = ({ user }) => {
+const AccountStatusBadge = ({ user, t }) => {
   const status = user.isDeleted
-    ? { label: 'Deleted', className: statusStyles.cancelled }
+    ? { label: t('accountStatuses.deleted'), className: statusStyles.cancelled }
     : user.isRestricted
-      ? { label: 'Restricted', className: statusStyles.pending }
-      : { label: 'Active', className: statusStyles.delivered };
+      ? { label: t('accountStatuses.restricted'), className: statusStyles.pending }
+      : { label: t('accountStatuses.active'), className: statusStyles.delivered };
 
   return (
     <span
@@ -89,6 +82,7 @@ const AccountStatusBadge = ({ user }) => {
 
 export default function Dashboard() {
   const dispatch = useDispatch();
+  const { t, currentLanguage } = useAppTranslation('dashboard');
   const [tab, setTab] = useState('overview');
   const [users, setUsers] = useState([]);
   const [query, setQuery] = useState('');
@@ -148,7 +142,7 @@ export default function Dashboard() {
     try {
       const saved = await adminService.updateUser(user.id, changes);
       setUsers((current) => current.map((item) => (item.id === saved.id ? saved : item)));
-      setMessage({ type: 'success', text: `${user.name}'s account was updated.` });
+      setMessage({ type: 'success', text: t('messages.accountUpdated', { name: user.name }) });
     } catch (error) {
       setMessage({ type: 'error', text: error.message });
     }
@@ -168,18 +162,18 @@ export default function Dashboard() {
       });
       setNewCategory('');
       dispatch(fetchCategories());
-      setMessage({ type: 'success', text: 'Category created.' });
+      setMessage({ type: 'success', text: t('messages.categoryCreated') });
     } catch (error) {
       setMessage({ type: 'error', text: error.message });
     }
   };
 
   const removeCategory = async (category) => {
-    if (!window.confirm(`Delete ${category.name}?`)) return;
+    if (!window.confirm(t('confirmDeleteCategory', { name: category.name }))) return;
     try {
       await adminService.deleteCategory(category.id);
       dispatch(fetchCategories());
-      setMessage({ type: 'success', text: 'Category deleted.' });
+      setMessage({ type: 'success', text: t('messages.categoryDeleted') });
     } catch (error) {
       setMessage({ type: 'error', text: error.message });
     }
@@ -215,7 +209,7 @@ export default function Dashboard() {
           .replace(/(^-|-$)/g, ''),
       });
       dispatch(fetchCategories());
-      setMessage({ type: 'success', text: 'Category updated.' });
+      setMessage({ type: 'success', text: t('messages.categoryUpdated') });
       closeCategoryEditor();
     } catch (error) {
       setMessage({ type: 'error', text: error.message });
@@ -227,17 +221,17 @@ export default function Dashboard() {
   const saveProduct = async (id, values) => {
     try {
       await dispatch(updateProduct({ id, updatedData: values })).unwrap();
-      setMessage({ type: 'success', text: 'Product updated.' });
+      setMessage({ type: 'success', text: t('messages.productUpdated') });
     } catch (error) {
       setMessage({ type: 'error', text: error });
     }
   };
 
   const removeProduct = async (id) => {
-    if (!window.confirm('Delete this product?')) return;
+    if (!window.confirm(t('confirmDeleteProduct'))) return;
     try {
       await dispatch(deleteProduct(id)).unwrap();
-      setMessage({ type: 'success', text: 'Product deleted.' });
+      setMessage({ type: 'success', text: t('messages.productDeleted') });
     } catch (error) {
       setMessage({ type: 'error', text: error });
     }
@@ -247,7 +241,7 @@ export default function Dashboard() {
     try {
       await dispatch(createProduct({ ...values, sellerId: 2, discountPercentage: 0 })).unwrap();
       setAdding(false);
-      setMessage({ type: 'success', text: 'Product created.' });
+      setMessage({ type: 'success', text: t('messages.productCreated') });
     } catch (error) {
       setMessage({ type: 'error', text: error });
     }
@@ -256,7 +250,7 @@ export default function Dashboard() {
   const changeOrderStatus = async (id, status) => {
     try {
       await dispatch(updateOrderStatus({ id, status })).unwrap();
-      setMessage({ type: 'success', text: 'Order status updated.' });
+      setMessage({ type: 'success', text: t('messages.orderStatusUpdated') });
     } catch (error) {
       setMessage({ type: 'error', text: error });
     }
@@ -264,33 +258,40 @@ export default function Dashboard() {
 
   const summaryCards = [
     {
-      label: 'Users',
+      label: t('tabs.users'),
       value: users.length,
-      detail: `${activeUsers} active accounts`,
+      detail: t('activeAccounts', { count: activeUsers }),
       icon: faUsers,
       iconStyle: 'bg-blue-50 text-blue-600 dark:bg-blue-500/10 dark:text-blue-300',
     },
     {
-      label: 'Products',
+      label: t('tabs.products'),
       value: products.length,
-      detail: `${lowStockProducts.length} need stock review`,
+      detail: t('needStockReview', { count: lowStockProducts.length }),
       icon: faBoxOpen,
       iconStyle: 'bg-violet-50 text-violet-600 dark:bg-violet-500/10 dark:text-violet-300',
     },
     {
-      label: 'Orders',
+      label: t('tabs.orders'),
       value: orders.length,
-      detail: `${pendingOrders.length} need attention`,
+      detail: t('needAttention', { count: pendingOrders.length }),
       icon: faCartShopping,
       iconStyle: 'bg-amber-50 text-amber-600 dark:bg-amber-500/10 dark:text-amber-300',
     },
     {
-      label: 'Sales',
-      value: formatCurrency(sales),
-      detail: 'Excluding cancelled orders',
+      label: t('sales'),
+      value: formatCurrency(sales, currentLanguage),
+      detail: t('excludingCancelledOrders'),
       icon: faSackDollar,
       iconStyle: 'bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-300',
     },
+  ];
+  const tabs = [
+    { name: 'overview', label: t('tabs.overview'), icon: faChartLine },
+    { name: 'users', label: t('tabs.users'), icon: faUsers },
+    { name: 'categories', label: t('tabs.categories'), icon: faLayerGroup },
+    { name: 'products', label: t('tabs.products'), icon: faBoxOpen },
+    { name: 'orders', label: t('tabs.orders'), icon: faCartShopping },
   ];
 
   return (
@@ -303,7 +304,7 @@ export default function Dashboard() {
 
       <nav
         className="mt-6 flex gap-1 overflow-x-auto rounded-2xl border border-gray-200 bg-white p-1.5 shadow-sm dark:border-gray-700 dark:bg-gray-900"
-        aria-label="Dashboard sections"
+        aria-label={t('sectionsLabel')}
         role="tablist"
       >
         {tabs.map(({ name, label, icon }) => (
@@ -362,9 +363,9 @@ export default function Dashboard() {
             <section className="rounded-2xl border border-gray-200 bg-white shadow-sm dark:border-gray-700 dark:bg-gray-900 xl:col-span-2">
               <div className="flex flex-wrap items-center justify-between gap-3 border-b border-gray-100 px-5 py-4 dark:border-gray-800">
                 <div>
-                  <h2 className="font-bold text-gray-950 dark:text-white">Recent orders</h2>
+                  <h2 className="font-bold text-gray-950 dark:text-white">{t('recentOrders')}</h2>
                   <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                    Monitor the latest customer activity.
+                    {t('recentOrdersDescription')}
                   </p>
                 </div>
                 <button
@@ -372,7 +373,7 @@ export default function Dashboard() {
                   onClick={() => setTab('orders')}
                   className="inline-flex items-center gap-2 text-sm font-semibold text-blue-600 hover:text-blue-700 dark:text-blue-400"
                 >
-                  Manage orders <FontAwesomeIcon icon={faArrowRight} />
+                  {t('manageOrders')} <FontAwesomeIcon icon={faArrowRight} />
                 </button>
               </div>
               <div className="divide-y divide-gray-100 dark:divide-gray-800">
@@ -387,20 +388,20 @@ export default function Dashboard() {
                       </span>
                       <div>
                         <p className="font-semibold text-gray-900 dark:text-white">
-                          Order #{order.id}
+                          {t('orderNumber', { id: order.id })}
                         </p>
                         <p className="text-sm text-gray-500 dark:text-gray-400">
-                          {order.items?.length || 0} item{order.items?.length === 1 ? '' : 's'} ·{' '}
-                          {formatCurrency(order.total)}
+                          {t('itemCount', { count: order.items?.length || 0 })} ·{' '}
+                          {formatCurrency(order.total, currentLanguage)}
                         </p>
                       </div>
                     </div>
-                    <StatusBadge status={order.status} />
+                    <StatusBadge status={order.status} t={t} />
                   </article>
                 ))}
                 {!orders.length && (
                   <p className="px-5 py-10 text-center text-sm text-gray-500 dark:text-gray-400">
-                    No orders yet.
+                    {t('noOrdersYet')}
                   </p>
                 )}
               </div>
@@ -413,8 +414,8 @@ export default function Dashboard() {
                     <FontAwesomeIcon icon={faTriangleExclamation} />
                   </span>
                   <div>
-                    <h2 className="font-bold text-gray-950 dark:text-white">Needs attention</h2>
-                    <p className="text-sm text-gray-500 dark:text-gray-400">Stock and fulfilment</p>
+                    <h2 className="font-bold text-gray-950 dark:text-white">{t('needsAttention')}</h2>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">{t('stockAndFulfilment')}</p>
                   </div>
                 </div>
                 <div className="mt-5 space-y-3">
@@ -424,7 +425,7 @@ export default function Dashboard() {
                     className="flex w-full items-center justify-between rounded-xl bg-amber-50 px-3 py-3 text-start transition-colors hover:bg-amber-100 dark:bg-amber-500/10 dark:hover:bg-amber-500/20"
                   >
                     <span className="text-sm font-semibold text-amber-900 dark:text-amber-200">
-                      Low-stock products
+                      {t('lowStockProducts')}
                     </span>
                     <span className="rounded-lg bg-white px-2 py-0.5 text-sm font-bold text-amber-700 shadow-sm dark:bg-gray-800 dark:text-amber-300">
                       {lowStockProducts.length}
@@ -436,7 +437,7 @@ export default function Dashboard() {
                     className="flex w-full items-center justify-between rounded-xl bg-blue-50 px-3 py-3 text-start transition-colors hover:bg-blue-100 dark:bg-blue-500/10 dark:hover:bg-blue-500/20"
                   >
                     <span className="flex items-center gap-2 text-sm font-semibold text-blue-900 dark:text-blue-200">
-                      <FontAwesomeIcon icon={faClock} /> Orders to process
+                      <FontAwesomeIcon icon={faClock} /> {t('ordersToProcess')}
                     </span>
                     <span className="rounded-lg bg-white px-2 py-0.5 text-sm font-bold text-blue-700 shadow-sm dark:bg-gray-800 dark:text-blue-300">
                       {pendingOrders.length}
@@ -446,7 +447,7 @@ export default function Dashboard() {
               </section>
 
               <section className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-700 dark:bg-gray-900">
-                <h2 className="font-bold text-gray-950 dark:text-white">Quick actions</h2>
+                <h2 className="font-bold text-gray-950 dark:text-white">{t('quickActions')}</h2>
                 <div className="mt-4 grid gap-2">
                   <Button
                     size="sm"
@@ -454,7 +455,7 @@ export default function Dashboard() {
                     onClick={() => setAdding(true)}
                     className="w-full"
                   >
-                    Add product
+                    {t('addProduct')}
                   </Button>
                   <Button
                     size="sm"
@@ -463,7 +464,7 @@ export default function Dashboard() {
                     onClick={() => setTab('categories')}
                     className="w-full"
                   >
-                    Manage categories
+                    {t('manageCategories')}
                   </Button>
                 </div>
               </section>
@@ -481,13 +482,13 @@ export default function Dashboard() {
         >
           <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
             <div>
-              <h2 className="text-xl font-bold text-gray-950 dark:text-white">Customer accounts</h2>
+              <h2 className="text-xl font-bold text-gray-950 dark:text-white">{t('customerAccounts')}</h2>
               <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                Search, restrict, or restore marketplace access.
+                {t('customerAccountsDescription')}
               </p>
             </div>
             <label className="relative block w-full sm:max-w-sm">
-              <span className="sr-only">Search users</span>
+              <span className="sr-only">{t('searchUsers')}</span>
               <FontAwesomeIcon
                 icon={faMagnifyingGlass}
                 className="pointer-events-none absolute start-3 top-1/2 -translate-y-1/2 text-gray-400"
@@ -495,7 +496,7 @@ export default function Dashboard() {
               <input
                 value={query}
                 onChange={(event) => setQuery(event.target.value)}
-                placeholder="Search by name or email"
+                placeholder={t('searchUsersPlaceholder')}
                 className="w-full rounded-xl border border-gray-300 bg-white py-2.5 ps-10 pe-3 text-gray-900 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:border-gray-600 dark:bg-gray-800 dark:text-white dark:focus:ring-blue-900/50"
               />
             </label>
@@ -504,10 +505,10 @@ export default function Dashboard() {
             <table className="w-full min-w-[680px] text-start text-sm">
               <thead className="border-y border-gray-100 bg-gray-50 text-xs uppercase tracking-wide text-gray-500 dark:border-gray-800 dark:bg-gray-800/60 dark:text-gray-400">
                 <tr>
-                  <th className="px-4 py-3 font-semibold">User</th>
-                  <th className="px-4 py-3 font-semibold">Role</th>
-                  <th className="px-4 py-3 font-semibold">Status</th>
-                  <th className="px-4 py-3 text-end font-semibold">Actions</th>
+                  <th className="px-4 py-3 font-semibold">{t('user')}</th>
+                  <th className="px-4 py-3 font-semibold">{t('role')}</th>
+                  <th className="px-4 py-3 font-semibold">{t('status')}</th>
+                  <th className="px-4 py-3 text-end font-semibold">{t('actions')}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
@@ -522,9 +523,9 @@ export default function Dashboard() {
                         {user.email}
                       </p>
                     </td>
-                    <td className="px-4 py-4 capitalize">{user.role}</td>
+                    <td className="px-4 py-4">{t(`roles.${user.role}`)}</td>
                     <td className="px-4 py-4">
-                      <AccountStatusBadge user={user} />
+                      <AccountStatusBadge user={user} t={t} />
                     </td>
                     <td className="px-4 py-4">
                       <div className="flex justify-end gap-2">
@@ -533,14 +534,14 @@ export default function Dashboard() {
                           variant="outline"
                           onClick={() => updateUser(user, { isRestricted: !user.isRestricted })}
                         >
-                          {user.isRestricted ? 'Unrestrict' : 'Restrict'}
+                          {user.isRestricted ? t('unrestrict') : t('restrict')}
                         </Button>
                         <Button
                           size="sm"
                           variant={user.isDeleted ? 'outline' : 'danger'}
                           onClick={() => updateUser(user, { isDeleted: !user.isDeleted })}
                         >
-                          {user.isDeleted ? 'Restore' : 'Soft delete'}
+                          {user.isDeleted ? t('restore') : t('softDelete')}
                         </Button>
                       </div>
                     </td>
@@ -552,7 +553,7 @@ export default function Dashboard() {
                       colSpan="4"
                       className="px-4 py-12 text-center text-gray-500 dark:text-gray-400"
                     >
-                      No users match your search.
+                      {t('noMatchingUsers')}
                     </td>
                   </tr>
                 )}
@@ -572,10 +573,10 @@ export default function Dashboard() {
           <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
             <div>
               <h2 className="text-xl font-bold text-gray-950 dark:text-white">
-                Product categories
+                {t('productCategories')}
               </h2>
               <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                Keep the catalogue organised and easy to browse.
+                {t('productCategoriesDescription')}
               </p>
             </div>
             <form onSubmit={addCategory} className="flex w-full gap-2 sm:max-w-md">
@@ -583,10 +584,10 @@ export default function Dashboard() {
                 value={newCategory}
                 onChange={(event) => setNewCategory(event.target.value)}
                 className="min-w-0 flex-1 rounded-xl border border-gray-300 bg-white px-3 py-2 text-gray-900 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:border-gray-600 dark:bg-gray-800 dark:text-white dark:focus:ring-blue-900/50"
-                placeholder="New category name"
+                placeholder={t('newCategoryName')}
               />
               <Button type="submit" icon={faPlus}>
-                Add
+                {t('add')}
               </Button>
             </form>
           </div>
@@ -607,7 +608,7 @@ export default function Dashboard() {
                 <div className="flex shrink-0 gap-2">
                   <button
                     type="button"
-                    aria-label={`Edit ${category.name}`}
+                    aria-label={t('editCategory', { name: category.name })}
                     className="grid h-9 w-9 place-items-center rounded-lg text-blue-600 transition hover:bg-blue-50 dark:text-blue-400 dark:hover:bg-blue-500/10"
                     onClick={() => openCategoryEditor(category)}
                   >
@@ -615,7 +616,7 @@ export default function Dashboard() {
                   </button>
                   <button
                     type="button"
-                    aria-label={`Delete ${category.name}`}
+                    aria-label={t('deleteCategory', { name: category.name })}
                     className="grid h-9 w-9 place-items-center rounded-lg text-rose-600 transition hover:bg-rose-50 dark:text-rose-400 dark:hover:bg-rose-500/10"
                     onClick={() => removeCategory(category)}
                   >
@@ -638,14 +639,14 @@ export default function Dashboard() {
           <div className="mb-5 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
             <div>
               <h2 className="text-xl font-bold text-gray-950 dark:text-white">
-                Catalogue management
+                {t('catalogueManagement')}
               </h2>
               <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                Review listings, prices, and stock availability.
+                {t('catalogueManagementDescription')}
               </p>
             </div>
             <Button icon={faPlus} onClick={() => setAdding(true)}>
-              Add product
+              {t('addProduct')}
             </Button>
           </div>
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
@@ -670,9 +671,9 @@ export default function Dashboard() {
           className="mt-6 rounded-2xl border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-700 dark:bg-gray-900 sm:p-6"
         >
           <div>
-            <h2 className="text-xl font-bold text-gray-950 dark:text-white">Order fulfilment</h2>
+            <h2 className="text-xl font-bold text-gray-950 dark:text-white">{t('orderFulfilment')}</h2>
             <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-              Update statuses as orders move from payment to delivery.
+              {t('orderFulfilmentDescription')}
             </p>
           </div>
           <div className="mt-6 space-y-3">
@@ -686,24 +687,24 @@ export default function Dashboard() {
                     <FontAwesomeIcon icon={order.status === 'shipped' ? faTruck : faCartShopping} />
                   </span>
                   <div>
-                    <p className="font-semibold text-gray-950 dark:text-white">Order #{order.id}</p>
+                    <p className="font-semibold text-gray-950 dark:text-white">{t('orderNumber', { id: order.id })}</p>
                     <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                      {order.items?.length || 0} item{order.items?.length === 1 ? '' : 's'} ·{' '}
-                      {formatCurrency(order.total)}
+                      {t('itemCount', { count: order.items?.length || 0 })} ·{' '}
+                      {formatCurrency(order.total, currentLanguage)}
                     </p>
                   </div>
                 </div>
                 <div className="flex items-center justify-between gap-3 sm:justify-end">
-                  <StatusBadge status={order.status} />
+                  <StatusBadge status={order.status} t={t} />
                   <select
                     className="rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:border-gray-600 dark:bg-gray-800 dark:text-white dark:focus:ring-blue-900/50"
                     value={order.status}
                     onChange={(event) => changeOrderStatus(order.id, event.target.value)}
-                    aria-label={`Update order ${order.id} status`}
+                    aria-label={t('updateOrderStatus', { id: order.id })}
                   >
                     {statuses.map((status) => (
                       <option key={status} value={status}>
-                        {status}
+                        {t(`statuses.${status}`)}
                       </option>
                     ))}
                   </select>
@@ -712,7 +713,7 @@ export default function Dashboard() {
             ))}
             {!orders.length && (
               <p className="py-10 text-center text-sm text-gray-500 dark:text-gray-400">
-                No orders to manage yet.
+                {t('noOrdersToManage')}
               </p>
             )}
           </div>
@@ -723,7 +724,7 @@ export default function Dashboard() {
         isOpen={adding}
         onClose={() => setAdding(false)}
         onSubmit={saveNewProduct}
-        title="Add product"
+        title={t('addProduct')}
       />
 
       {editingCategory && (
@@ -740,22 +741,22 @@ export default function Dashboard() {
             <div className="flex items-start justify-between gap-4">
               <div>
                 <p className="text-sm font-medium text-blue-600 dark:text-blue-400">
-                  Catalogue management
+                  {t('catalogueManagement')}
                 </p>
                 <h2
                   id="edit-category-title"
                   className="mt-1 text-xl font-bold text-gray-950 dark:text-white"
                 >
-                  Edit category
+                  {t('editCategoryTitle')}
                 </h2>
                 <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                  Update the name shown in the product catalogue.
+                  {t('editCategoryDescription')}
                 </p>
               </div>
               <button
                 type="button"
                 onClick={closeCategoryEditor}
-                aria-label="Close edit category dialog"
+                aria-label={t('closeEditCategoryDialog')}
                 className="grid h-9 w-9 shrink-0 place-items-center rounded-lg text-gray-500 transition hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-white"
               >
                 <FontAwesomeIcon icon={faXmark} />
@@ -766,7 +767,7 @@ export default function Dashboard() {
                 htmlFor="edit-category-name"
                 className="block text-sm font-semibold text-gray-700 dark:text-gray-200"
               >
-                Category name
+                {t('categoryName')}
               </label>
               <input
                 id="edit-category-name"
@@ -778,10 +779,10 @@ export default function Dashboard() {
               />
               <div className="mt-6 flex justify-end gap-3">
                 <Button type="button" variant="outline" onClick={closeCategoryEditor}>
-                  Cancel
+                  {t('cancel')}
                 </Button>
                 <Button type="submit" isLoading={savingCategory}>
-                  Save changes
+                  {t('saveChanges')}
                 </Button>
               </div>
             </form>
