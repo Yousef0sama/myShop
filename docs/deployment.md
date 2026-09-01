@@ -116,8 +116,9 @@ environment variables for `vercel dev` instead of manually creating `.env.local`
 
 ## 3. Deploy the API to Render
 
-1. Select **New → Web Service** in Render and connect the GitHub repository.
-2. Configure the service:
+1. Select **New → Blueprint** in Render and connect the GitHub repository.
+2. Set the Blueprint Path to `deploy/render.yaml`, then select the `main` branch and deploy it.
+   The repository Blueprint supplies the following service settings:
 
    | Setting | Value |
    | ------- | ----- |

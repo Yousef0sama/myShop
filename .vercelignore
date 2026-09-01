@@ -1,4 +1,0 @@
-# Render's Blueprint is consumed by Render directly from GitHub. Exclude it from
-# Vercel's source upload so its service declaration is not treated as a Vercel
-# multi-service configuration.
-render.yaml
