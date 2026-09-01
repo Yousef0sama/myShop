@@ -4,6 +4,7 @@ import profileReducer from './slices/profileSlice';
 import uiReducer from './slices/uiSlice';
 import productsReducer from './slices/productsSlice';
 import cartReducer from './slices/cartSlice';
+import reviewsReducer from './slices/reviewsSlice'
 import wishlistReducer from './slices/wishlistSlice';
 import ordersReducer from './slices/ordersSlice';
 
@@ -15,6 +16,7 @@ const store = configureStore({
     ui: uiReducer, // ? App layout state including active language (RTL/LTR) and dark mode
     products: productsReducer, // ? Product catalog listing, categories, and CRUD status
     cart: cartReducer,
+    reviews: reviewsReducer,
     wishlist: wishlistReducer,
     orders: ordersReducer,
   },

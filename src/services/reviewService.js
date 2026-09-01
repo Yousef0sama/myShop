@@ -10,4 +10,12 @@ export const reviewService = {
     const { data } = await api.post(ENDPOINTS.REVIEWS, review);
     return data;
   },
+  async update(id, review) {
+    const { data } = await api.put(`${ENDPOINTS.REVIEWS}/${id}`, review);
+    return data;
+  },
+  async delete(id) {
+    await api.delete(`${ENDPOINTS.REVIEWS}/${id}`);
+    return id;
+  },
 };

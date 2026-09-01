@@ -1,6 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faXmark } from '@fortawesome/free-solid-svg-icons';
+import { 
+  faXmark, 
+  faHeading, 
+  faTag, 
+  faPercent, 
+  faBoxesStacked, 
+  faTrademark, 
+  faFolder, 
+  faImage 
+} from '@fortawesome/free-solid-svg-icons';
+import Input from '../UI/Input';
+import Button from '../UI/Button';
 
 export default function ProductModal({
   isOpen,
@@ -12,6 +23,7 @@ export default function ProductModal({
   const [formData, setFormData] = useState({
     title: '',
     price: '',
+    discountPercentage: '',
     category: '',
     brand: '',
     description: '',
@@ -19,11 +31,13 @@ export default function ProductModal({
     stock: 0,
     isActive: true,
   });
+
   useEffect(() => {
     if (initialData) {
       setFormData({
         title: initialData.title || '',
         price: initialData.price || '',
+        discountPercentage: initialData.discountPercentage ?? '',
         category: initialData.category || '',
         brand: initialData.brand || '',
         description: initialData.description || '',
@@ -35,6 +49,7 @@ export default function ProductModal({
       setFormData({
         title: '',
         price: '',
+        discountPercentage: '',
         category: '',
         brand: '',
         description: '',
@@ -48,15 +63,15 @@ export default function ProductModal({
   if (!isOpen) return null;
 
   const handleInputChange = (e) => {
-    const { name, value } = e.target;
+    const { name, value, type, checked } = e.target;
     setFormData((prev) => ({
       ...prev,
-      [name]: ['price', 'stock'].includes(name)
+      [name]: ['price', 'stock', 'discountPercentage'].includes(name)
         ? value === ''
           ? ''
           : Number(value)
-        : name === 'isActive'
-          ? e.target.checked
+        : type === 'checkbox'
+          ? checked
           : value,
     }));
   };
@@ -68,125 +83,156 @@ export default function ProductModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
-      <div className="bg-white rounded-2xl p-6 w-full max-w-md shadow-2xl relative space-y-4 animate-in fade-in zoom-in duration-200">
-        <div className="flex justify-between items-center border-b pb-3">
-          <h3 className="text-lg font-bold text-gray-900">{title}</h3>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 overflow-y-auto">
+      <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 w-full max-w-md shadow-2xl relative space-y-4 animate-in fade-in zoom-in duration-200 border border-gray-100 dark:border-gray-700 my-8">
+        
+        {/* Header */}
+        <div className="flex justify-between items-center border-b border-gray-200 dark:border-gray-700 pb-3">
+          <h3 className="text-lg font-bold text-gray-900 dark:text-white">{title}</h3>
           <button
             onClick={onClose}
-            className="text-gray-400 hover:text-gray-600 p-1 transition-colors"
+            className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 p-1 transition-colors"
           >
             <FontAwesomeIcon icon={faXmark} className="text-lg" />
           </button>
         </div>
 
+        {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label className="block text-xs font-semibold text-gray-700 mb-1">Title</label>
-            <input
-              type="text"
-              name="title"
-              value={formData.title}
+          {/* Title */}
+          <Input
+            label="Title"
+            name="title"
+            value={formData.title}
+            onChange={handleInputChange}
+            placeholder="Enter product title"
+            icon={faHeading}
+            required
+          />
+
+          <div className="grid grid-cols-2 gap-3">
+            {/* Price */}
+            <Input
+              label="Price"
+              type="number"
+              name="price"
+              value={formData.price}
               onChange={handleInputChange}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="0.00"
+              icon={faTag}
+              min="0"
+              step="0.01"
               required
+            />
+            
+            {/* Discount Percentage */}
+            <Input
+              label="Discount %"
+              type="number"
+              name="discountPercentage"
+              value={formData.discountPercentage}
+              onChange={handleInputChange}
+              placeholder="0"
+              icon={faPercent}
+              min="0"
+              max="100"
+              step="0.1"
             />
           </div>
 
           <div className="grid grid-cols-2 gap-3">
-            <div>
-              <label className="block text-xs font-semibold text-gray-700 mb-1">Price </label>
-              <input
-                type="number"
-                name="price"
-                value={formData.price}
-                onChange={handleInputChange}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                required
-              />
-            </div>
-            <div>
-              <label className="block text-xs font-semibold text-gray-700 mb-1">Stock</label>
-              <input
-                type="number"
-                min="0"
-                name="stock"
-                value={formData.stock}
-                onChange={handleInputChange}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"
-                required
-              />
-            </div>
-
-            <div>
-              <label className="block text-xs font-semibold text-gray-700 mb-1">Brand</label>
-              <input
-                type="text"
-                name="brand"
-                value={formData.brand}
-                onChange={handleInputChange}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                required
-              />
-            </div>
-          </div>
-
-          <div>
-            <label className="block text-xs font-semibold text-gray-700 mb-1">Category</label>
-            <input
-              type="text"
-              name="category"
-              value={formData.category}
+            {/* Stock */}
+            <Input
+              label="Stock"
+              type="number"
+              name="stock"
+              value={formData.stock}
               onChange={handleInputChange}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="0"
+              icon={faBoxesStacked}
+              min="0"
+              required
+            />
+
+            {/* Brand */}
+            <Input
+              label="Brand"
+              name="brand"
+              value={formData.brand}
+              onChange={handleInputChange}
+              placeholder="Enter brand"
+              icon={faTrademark}
               required
             />
           </div>
-          <div>
-            <label className="block text-xs font-semibold text-gray-700 mb-1">Image URL</label>
-            <input
-              type="url"
-              name="thumbnail"
-              value={formData.thumbnail}
-              onChange={handleInputChange}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"
-            />
-          </div>
-          <label className="flex gap-2 text-sm text-gray-700">
+
+          {/* Category */}
+          <Input
+            label="Category"
+            name="category"
+            value={formData.category}
+            onChange={handleInputChange}
+            placeholder="Enter category"
+            icon={faFolder}
+            required
+          />
+
+          {/* Image URL */}
+          <Input
+            label="Image URL"
+            type="url"
+            name="thumbnail"
+            value={formData.thumbnail}
+            onChange={handleInputChange}
+            placeholder="https://example.com/image.jpg"
+            icon={faImage}
+          />
+
+          {/* Active Checkbox */}
+          <label className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300 cursor-pointer pt-1">
             <input
               type="checkbox"
               name="isActive"
               checked={formData.isActive}
               onChange={handleInputChange}
+              className="rounded border-gray-300 dark:border-gray-700 text-blue-600 focus:ring-blue-500 w-4 h-4"
             />
             Visible in catalogue
           </label>
 
-          <div>
-            <label className="block text-xs font-semibold text-gray-700 mb-1">Description</label>
+          {/* Description */}
+          <div className="flex flex-col gap-1 w-full">
+            <label htmlFor="description" className="text-sm font-medium text-gray-700 dark:text-gray-300">
+              Description
+            </label>
             <textarea
+              id="description"
               name="description"
               value={formData.description}
               onChange={handleInputChange}
+              placeholder="Enter product description..."
               rows="3"
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+              className="w-full bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:border-blue-500 dark:focus:border-blue-400 focus:ring-blue-200 dark:focus:ring-blue-900/50 resize-none transition-all"
             />
           </div>
 
-          <div className="flex justify-end gap-2 pt-2 border-t">
-            <button
+          {/* Footer Actions */}
+          <div className="flex justify-end gap-2 pt-3 border-t border-gray-200 dark:border-gray-700">
+            <Button
               type="button"
+              variant="outline"
+              size="sm"
               onClick={onClose}
-              className="px-4 py-2 rounded-lg text-sm text-gray-600 hover:bg-gray-100 font-medium transition-colors"
             >
               Cancel
-            </button>
-            <button
+            </Button>
+            <Button
               type="submit"
-              className="px-4 py-2 rounded-lg text-sm bg-blue-600 hover:bg-blue-700 text-white font-medium shadow-sm transition-colors"
+              variant="primary"
+              size="sm"
             >
               Save
-            </button>
+            </Button>
           </div>
         </form>
       </div>

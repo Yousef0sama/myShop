@@ -173,3 +173,21 @@ export const validateAddress = (addressData, tErrors) => {
 
   return { isValid: true, error: null };
 };
+
+export const validateReview = ({ rating, comment }) => {
+  const errors = {};
+
+  // Rating validation: must exist and be between 1 and 5
+  if (!rating || Number(rating) < 1 || Number(rating) > 5) {
+    errors.rating = 'Rating is required and must be between 1 and 5';
+  }
+
+  // Comment validation: must not be empty and must meet minimum length requirement
+  if (!comment || !comment.trim()) {
+    errors.comment = 'Comment is required';
+  } else if (comment.trim().length < 5) {
+    errors.comment = 'Comment must be at least 5 characters long';
+  }
+
+  return errors;
+};

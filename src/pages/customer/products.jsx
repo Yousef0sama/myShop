@@ -12,7 +12,7 @@ import Select from '../../components/UI/Select';
 import Alert from '../../components/UI/Alert';
 
 export default function Products() {
-  const { t } = useAppTranslation('common');
+  const { t } = useAppTranslation('products');
   const dispatch = useDispatch();
 
   // ? Global product catalog state from Redux
