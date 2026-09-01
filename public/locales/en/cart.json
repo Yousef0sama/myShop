@@ -1,0 +1,22 @@
+{
+  "title": "Shopping Cart",
+  "continueShopping": "Continue shopping",
+  "itemSingular": "item in your cart",
+  "itemPlural": "items in your cart",
+  "perUnit": "per unit",
+  "remove": "Remove",
+  "totalPrice": "Total Price:",
+  "empty": {
+    "title": "Your cart is empty",
+    "desc": "Looks like you haven't added anything to your cart yet. Explore our products and find something you love!",
+    "btn": "Browse products"
+  },
+  "summary": {
+    "title": "Order Summary",
+    "subtotal": "Subtotal",
+    "shipping": "Shipping",
+    "free": "Free",
+    "total": "Total Amount",
+    "checkout": "Proceed to Checkout"
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "title": "Checkout",
+  "errors": {
+    "chooseAddress": "Choose an address and add at least one item.",
+    "noStock": "One or more items no longer have enough stock.",
+    "default": "Unable to place the order."
+  },
+  "delivery": {
+    "title": "Delivery address",
+    "noAddress": "Add an address in",
+    "profileLink": "your profile",
+    "suffix": "first."
+  },
+  "payment": {
+    "title": "Payment (demo only)",
+    "cashOnDelivery": "Cash on delivery",
+    "wallet": "Mock wallet",
+    "savedCard": "Saved card ending"
+  },
+  "summary": {
+    "subtotal": "Subtotal",
+    "shipping": "Shipping",
+    "total": "Total"
+  },
+  "btn": "Place order"
+}

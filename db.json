@@ -89,7 +89,7 @@
       "category": "electronics",
       "brand": "Sonic",
       "thumbnail": "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=700&q=80",
-      "stock": 11,
+      "stock": 10,
       "isActive": true,
       "discountPercentage": 10
     },
@@ -157,26 +157,19 @@
       "stock": 0,
       "isActive": true,
       "discountPercentage": 0
-    },
-    {
-      "title": "car",
-      "price": 1000,
-      "category": "car",
-      "brand": "car",
-      "description": "no dis",
-      "thumbnail": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQmK7X0f0tolOwRqKUzSuNnImzcSQePk7GHKT_2PDNx8g_Oh6NQIPgWp-I&s=10",
-      "stock": 3,
-      "isActive": true,
-      "sellerId": 2,
-      "discountPercentage": 0,
-      "id": 7
     }
   ],
   "carts": [
     {
       "id": 1,
       "userId": 1,
-      "items": []
+      "items": [
+        {
+          "productId": 2,
+          "quantity": 1,
+          "price": 1850
+        }
+      ]
     }
   ],
   "wishList": [
@@ -201,7 +194,7 @@
           "sellerId": 2
         }
       ],
-      "addressId": 1,
+      "address": "15 Abbas El Akkad St, Nasr City, Cairo",
       "paymentMethod": "cash_on_delivery",
       "subtotal": 950,
       "discount": 0,
@@ -235,7 +228,7 @@
           "sellerId": 2
         }
       ],
-      "addressId": 1,
+      "address": "15 Abbas El Akkad St, Nasr City, Cairo",
       "paymentMethod": "cash_on_delivery",
       "subtotal": 7149,
       "discount": 0,
@@ -256,7 +249,7 @@
           "sellerId": 2
         }
       ],
-      "addressId": 1,
+      "address": "15 Abbas El Akkad St, Nasr City, Cairo",
       "paymentMethod": "card_1",
       "subtotal": 950,
       "discount": 0,
@@ -265,6 +258,27 @@
       "status": "pending",
       "createdAt": "2026-08-31T13:53:47.656Z",
       "id": 3
+    },
+    {
+      "userId": 1,
+      "items": [
+        {
+          "productId": 1,
+          "title": "Wireless Noise-Cancelling Headphones",
+          "quantity": 1,
+          "price": 2499,
+          "sellerId": 2
+        }
+      ],
+      "address": "15 Abbas El Akkad St, Nasr City, Cairo",
+      "paymentMethod": "cash_on_delivery",
+      "subtotal": 2499,
+      "discount": 0,
+      "shipping": 60,
+      "total": 2559,
+      "status": "pending",
+      "createdAt": "2026-09-01T08:02:59.892Z",
+      "id": 4
     }
   ],
   "reviews": [

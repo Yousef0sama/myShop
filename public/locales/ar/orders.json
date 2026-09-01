@@ -1,0 +1,32 @@
+{
+  "titles": {
+    "seller": "الطلبات المراد معالجتها",
+    "customer": "طلباتي"
+  },
+  "subtitle": "إدارة وتتبع حالة طلبات العملاء وتفاصيل التوصيل.",
+  "searchPlaceholder": "البحث برقم الطلب أو اسم المنتج...",
+  "allStatuses": "جميع الحالات",
+  "loading": "جاري تحميل الطلبات...",
+  "noOrders": "لا توجد طلبات.",
+  "shippingDetails": "تفاصيل الشحن:",
+  "address": "العنوان:",
+  "noAddress": "لم يتم توفير عنوان شحن",
+  "subtotal": "المجموع الفرعي:",
+  "shippingFee": "رسوم الشحن:",
+  "discount": "الخصم:",
+  "paymentMethod": "طريقة الدفع:",
+  "total": "الإجمالي:",
+  "statuses": {
+    "pending": "قيد الانتظار",
+    "confirmed": "مؤكد",
+    "processing": "قيد المعالجة",
+    "shipped": "تم الشحن",
+    "delivered": "تم التوصيل",
+    "cancelled": "ملغي"
+  },
+  "paymentMethods": {
+    "cash_on_delivery": "الدفع عند الاستلام",
+    "card": "بطاقة ائتمان / خصم",
+    "default": "غير متوفر"
+  }
+}

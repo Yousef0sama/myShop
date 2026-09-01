@@ -1,0 +1,32 @@
+{
+  "titles": {
+    "seller": "Orders to Process",
+    "customer": "My Orders"
+  },
+  "subtitle": "Manage and track customer order status and delivery details.",
+  "searchPlaceholder": "Search by Order ID or Product Name...",
+  "allStatuses": "All Statuses",
+  "loading": "Loading orders…",
+  "noOrders": "No orders found.",
+  "shippingDetails": "Shipping Details:",
+  "address": "Address:",
+  "noAddress": "No shipping address provided",
+  "subtotal": "Subtotal:",
+  "shippingFee": "Shipping Fee:",
+  "discount": "Discount:",
+  "paymentMethod": "Payment Method:",
+  "total": "Total:",
+  "statuses": {
+    "pending": "Pending",
+    "confirmed": "Confirmed",
+    "processing": "Processing",
+    "shipped": "Shipped",
+    "delivered": "Delivered",
+    "cancelled": "Cancelled"
+  },
+  "paymentMethods": {
+    "cash_on_delivery": "Cash on Delivery",
+    "card": "Credit / Debit Card",
+    "default": "N/A"
+  }
+}
