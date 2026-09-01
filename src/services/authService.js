@@ -6,6 +6,7 @@ export const authService = {
   // * Authenticate user using email and password
   login: async (email, password) => {
     const response = await api.post(ENDPOINTS.LOGIN, { email, password });
+    console.log(response);
     if (response.data.user?.isDeleted || response.data.user?.isRestricted) {
       throw new Error('This account is unavailable. Please contact support.');
     }

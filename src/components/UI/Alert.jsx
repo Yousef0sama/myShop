@@ -10,7 +10,7 @@ import {
 // * Multi-variant feedback alert component supporting inline, toast, and modal displays with Dark Mode & RTL support
 const Alert = ({
   type = 'error', // ? Severity type enum: 'error' | 'success' | 'info'
-  variant = 'inline', // ? Display format enum: 'inline' | 'toast' | 'modal'
+  variant = 'inline', // ? Display format enum: 'inline' | 'toast'
   message,
   onClose,
 }) => {
@@ -67,18 +67,7 @@ const Alert = ({
     );
   }
 
-  // ! 2. Modal Overlay Display (Center Viewport Backdrop Container)
-  if (variant === 'modal') {
-    return (
-      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 dark:bg-black/70 p-4 backdrop-blur-xs">
-        <div className="max-w-md w-full bg-white dark:bg-gray-800 rounded-lg p-2 shadow-xl border border-gray-100 dark:border-gray-700">
-          {content}
-        </div>
-      </div>
-    );
-  }
-
-  // * 3. Default Inline Layout Integration
+  // * 2. Default Inline Layout Integration
   return content;
 };
 

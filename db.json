@@ -34,12 +34,13 @@
   "addresses": [
     {
       "id": 1,
-      "country": "EG",
+      "country": "Egypt",
       "state": "Cairo",
       "city": "Nasr City",
       "street": "15 Abbas El Akkad St",
       "isDefault": true,
-      "userId": 1
+      "userId": 1,
+      "countryCode": "EG"
     }
   ],
   "cards": [

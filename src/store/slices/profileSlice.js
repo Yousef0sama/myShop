@@ -1,6 +1,12 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { profileService } from '../../services/profileService';
-import { updateAuthUser } from './authSlice';
+import { updateAuthUser, logout } from './authSlice';
+import {
+  validateProfileField,
+  validateChangePassword,
+  validateCard,
+  validateAddress,
+} from '../../utils/validation';
 
 // * Initial profile state structure
 const initialState = {
@@ -13,28 +19,62 @@ const initialState = {
 // * Async Thunk: Update basic user info & sync with Auth State
 export const updateProfile = createAsyncThunk(
   'profile/updateProfile',
-  async ({ userId, updatedData }, { dispatch, rejectWithValue }) => {
+  async ({ userId, updatedData, fieldName, tErrors }, { dispatch, rejectWithValue }) => {
+    if (tErrors) {
+      if (fieldName) {
+        const validation = validateProfileField(fieldName, updatedData[fieldName], tErrors);
+        if (!validation.isValid) return rejectWithValue(validation.error);
+      } else {
+        for (const key of ['name', 'email', 'phone']) {
+          if (updatedData[key] !== undefined) {
+            const validation = validateProfileField(key, updatedData[key], tErrors);
+            if (!validation.isValid) return rejectWithValue(validation.error);
+          }
+        }
+      }
+    }
+
     try {
       const data = await profileService.updateProfile(userId, updatedData);
       dispatch(updateAuthUser(data));
       return data;
     } catch (error) {
-      // ! Return localized error translation key
       return rejectWithValue(error.message || 'errors.updateFailed');
     }
   }
 );
 
-// * Async Thunk: Change account password
+// * Async Thunk: Change account password after verifying current password
 export const changePassword = createAsyncThunk(
   'profile/changePassword',
-  async ({ userId, newPassword }, { rejectWithValue }) => {
+  async ({ userId, currentPassword, newPassword, confirmPassword, tErrors }, { rejectWithValue }) => {
+    if (tErrors) {
+      const validation = validateChangePassword(
+        { currentPassword, newPassword, confirmPassword },
+        tErrors
+      );
+      if (!validation.isValid) return rejectWithValue(validation.error);
+    }
+
     try {
-      const data = await profileService.changePassword(userId, newPassword);
+      const data = await profileService.changePassword(userId, currentPassword, newPassword);
       return data;
     } catch (error) {
-      // ! Return localized error translation key
       return rejectWithValue(error.message || 'errors.updateFailed');
+    }
+  }
+);
+
+// * Async Thunk: Soft delete user account & end active session
+export const deleteAccount = createAsyncThunk(
+  'profile/deleteAccount',
+  async ({ userId }, { dispatch, rejectWithValue }) => {
+    try {
+      const data = await profileService.deleteAccount(userId);
+      dispatch(logout());
+      return data;
+    } catch (error) {
+      return rejectWithValue(error.message || 'errors.deleteAccountFailed');
     }
   }
 );
@@ -46,7 +86,6 @@ export const fetchAddresses = createAsyncThunk(
     try {
       return await profileService.getAddresses(userId);
     } catch (error) {
-      // ! Return localized error translation key
       return rejectWithValue(error.message || 'errors.fetchAddressesFailed');
     }
   }
@@ -55,11 +94,15 @@ export const fetchAddresses = createAsyncThunk(
 // * Async Thunk: Add a new address
 export const addAddress = createAsyncThunk(
   'profile/addAddress',
-  async (addressData, { rejectWithValue }) => {
+  async ({ addressData, tErrors }, { rejectWithValue }) => {
+    if (tErrors) {
+      const validation = validateAddress(addressData, tErrors);
+      if (!validation.isValid) return rejectWithValue(validation.error);
+    }
+
     try {
       return await profileService.addAddress(addressData);
     } catch (error) {
-      // ! Return localized error translation key
       return rejectWithValue(error.message || 'errors.addAddressFailed');
     }
   }
@@ -68,11 +111,15 @@ export const addAddress = createAsyncThunk(
 // * Async Thunk: Update an existing address
 export const updateAddress = createAsyncThunk(
   'profile/updateAddress',
-  async ({ addressId, updatedData }, { rejectWithValue }) => {
+  async ({ addressId, updatedData, tErrors }, { rejectWithValue }) => {
+    if (tErrors) {
+      const validation = validateAddress(updatedData, tErrors);
+      if (!validation.isValid) return rejectWithValue(validation.error);
+    }
+
     try {
       return await profileService.updateAddress(addressId, updatedData);
     } catch (error) {
-      // ! Return localized error translation key
       return rejectWithValue(error.message || 'errors.updateAddressFailed');
     }
   }
@@ -86,7 +133,6 @@ export const deleteAddress = createAsyncThunk(
       await profileService.deleteAddress(addressId);
       return addressId;
     } catch (error) {
-      // ! Return localized error translation key
       return rejectWithValue(error.message || 'errors.deleteAddressFailed');
     }
   }
@@ -99,7 +145,6 @@ export const fetchCards = createAsyncThunk(
     try {
       return await profileService.getCards(userId);
     } catch (error) {
-      // ! Return localized error translation key
       return rejectWithValue(error.message || 'errors.fetchCardsFailed');
     }
   }
@@ -108,11 +153,15 @@ export const fetchCards = createAsyncThunk(
 // * Async Thunk: Add a new payment card
 export const addCard = createAsyncThunk(
   'profile/addCard',
-  async (cardData, { rejectWithValue }) => {
+  async ({ cardData, tErrors }, { rejectWithValue }) => {
+    if (tErrors) {
+      const validation = validateCard(cardData, tErrors);
+      if (!validation.isValid) return rejectWithValue(validation.error);
+    }
+
     try {
       return await profileService.addCard(cardData);
     } catch (error) {
-      // ! Return localized error translation key
       return rejectWithValue(error.message || 'errors.addCardFailed');
     }
   }
@@ -126,7 +175,6 @@ export const deleteCard = createAsyncThunk(
       await profileService.deleteCard(cardId);
       return cardId;
     } catch (error) {
-      // ! Return localized error translation key
       return rejectWithValue(error.message || 'errors.deleteCardFailed');
     }
   }
@@ -137,11 +185,9 @@ const profileSlice = createSlice({
   name: 'profile',
   initialState,
   reducers: {
-    // ? Clear any existing profile-related error
     clearProfileError: (state) => {
       state.error = null;
     },
-    // ? Reset entire profile slice state to initial values
     resetProfileState: () => initialState,
   },
   extraReducers: (builder) => {
@@ -172,6 +218,21 @@ const profileSlice = createSlice({
         state.error = action.payload;
       })
 
+      // * Delete Account Handlers
+      .addCase(deleteAccount.pending, (state) => {
+        state.status = 'loading';
+        state.error = null;
+      })
+      .addCase(deleteAccount.fulfilled, (state) => {
+        state.status = 'succeeded';
+        state.addresses = [];
+        state.cards = [];
+      })
+      .addCase(deleteAccount.rejected, (state, action) => {
+        state.status = 'failed';
+        state.error = action.payload;
+      })
+
       // * Addresses Handlers
       .addCase(fetchAddresses.pending, (state) => {
         state.status = 'loading';
@@ -186,9 +247,21 @@ const profileSlice = createSlice({
         state.error = action.payload;
       })
       .addCase(addAddress.fulfilled, (state, action) => {
+        if (action.payload.isDefault) {
+          state.addresses.forEach((addr) => {
+            addr.isDefault = false;
+          });
+        }
         state.addresses.push(action.payload);
       })
       .addCase(updateAddress.fulfilled, (state, action) => {
+        if (action.payload.isDefault) {
+          state.addresses.forEach((addr) => {
+            if (addr.id !== action.payload.id) {
+              addr.isDefault = false;
+            }
+          });
+        }
         const index = state.addresses.findIndex((addr) => addr.id === action.payload.id);
         if (index !== -1) {
           state.addresses[index] = action.payload;

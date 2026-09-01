@@ -45,7 +45,7 @@ const Profile = () => {
   const sidebarItems = getSidebarItemsByRole();
 
   return (
-    <div className="w-full flex-1 flex flex-col md:flex-row gap-6 p-4 sm:p-6 md:p-8">
+    <div className="w-full flex-1 flex flex-col lg:flex-row gap-6 p-4 sm:p-6 lg:p-8">
       {/* Sidebar Section */}
       <Sidebar title={t('sidebar.title')} subtitle={currentUser?.name || ''}>
         {sidebarItems.map((item) => (

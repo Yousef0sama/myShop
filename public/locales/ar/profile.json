@@ -10,17 +10,26 @@
   "infoTitle": "البيانات الشخصية",
   "infoSubtitle": "عرض وتعديل معلومات حسابك الأساسية",
   "updateSuccess": "تم تحديث البيانات بنجاح",
-  "passwordMismatchError": "كلمتا المرور غير متطابقتين",
+  "deleteSuccess": "تم حذف الحساب بنجاح",
   "cancelBtn": "إلغاء",
   "saveBtn": "حفظ التغييرات",
   "labels": {
-    "currentPassword": "كلمة المرور الحالية"
+    "currentPassword": "كلمة المرور الحالية",
+    "newPassword": "كلمة المرور الجديدة",
+    "confirmPassword": "تأكيد كلمة المرور"
   },
   "editFields": {
     "name": "تعديل الاسم",
     "email": "تعديل البريد الإلكتروني",
     "phone": "تعديل رقم الهاتف",
     "password": "تغيير كلمة المرور"
+  },
+  "dangerZone": {
+    "title": "حذف الحساب",
+    "subtitle": "تعطيل حسابك الشخصي",
+    "confirmTitle": "هل أنت متأكد من حذف الحساب؟",
+    "confirmText": "هذا الإجراء سيؤدي إلى تعطيل حسابك. سيتم تسجيل خروجك ولن تتمكن من الوصول إلى ملفك الشخصي.",
+    "confirmBtn": "حذف الحساب"
   },
   "addressesTitle": "العناوين المخزنة",
   "addressesSubtitle": "إدارة عناوين الشحن والتوصيل الخاصة بك",
@@ -35,7 +44,7 @@
   "city": "المدينة",
   "street": "الشارع / التفاصيل",
   "setAsDefault": "تعيين كعنوان رئيسي",
-  "cancel": "إلغاء",
+  "addAddress": "إضافة عنوان جديد",
   "cardsTitle": "بطاقات الدفع",
   "cardsSubtitle": "إدارة بطاقات الدفع المخزنة في حسابك",
   "payoutCardsTitle": "بطاقة استلام الأرباح",
@@ -51,12 +60,38 @@
   "saveCard": "حفظ البطاقة",
   "errors": {
     "updateFailed": "فشل تحديث البيانات الشخصية",
+    "deleteAccountFailed": "فشل حذف الحساب",
     "fetchAddressesFailed": "فشل جلب العناوين",
     "addAddressFailed": "فشل إضافة العنوان",
     "updateAddressFailed": "فشل تعديل العنوان",
     "deleteAddressFailed": "فشل حذف العنوان",
     "fetchCardsFailed": "فشل جلب البطاقات",
     "addCardFailed": "فشل إضافة البطاقة",
-    "deleteCardFailed": "فشل حذف البطاقة"
+    "deleteCardFailed": "فشل حذف البطاقة",
+    "nameRequired": "الاسم مطلوب",
+    "nameMin": "يجب ألا يقل الاسم عن 3 حروف",
+    "nameMax": "يجب ألا يتجاوز الاسم 70 حرفاً",
+    "emailRequired": "البريد الإلكتروني مطلوب",
+    "emailInvalid": "البريد الإلكتروني غير صحيح",
+    "phoneRequired": "رقم الهاتف مطلوب",
+    "phoneInvalid": "رقم الهاتف غير صحيح (يجب أن يبدأ بـ 01 ويتكون من 11 رقم)",
+    "roleRequired": "يرجى اختيار الدور",
+    "currentPasswordRequired": "كلمة المرور الحالية مطلوبة",
+    "passwordRequired": "كلمة المرور مطلوبة",
+    "passwordMin": "يجب ألا تقل كلمة المرور عن 8 خانات",
+    "passwordMax": "يجب ألا تتجاوز كلمة المرور 20 خانة",
+    "confirmPasswordRequired": "تأكيد كلمة المرور مطلوب",
+    "passwordMismatch": "كلمتا المرور غير متطابقتين",
+    "cardHolderNameRequired": "اسم حامل البطاقة مطلوب",
+    "cardNumberRequired": "رقم البطاقة مطلوب",
+    "cardNumberInvalid": "رقم البطاقة غير صحيح (يجب أن يتكون من 16 رقم)",
+    "expiryDateRequired": "تاريخ الانتهاء مطلوب",
+    "expiryDateInvalid": "تاريخ الانتهاء غير صحيح (MM/YY)",
+    "cvvRequired": "رمز CVC / CVV مطلوب",
+    "cvvInvalid": "رمز CVC / CVV غير صحيح (3 أو 4 أرقام)",
+    "countryRequired": "الدولة مطلوبة",
+    "stateRequired": "المحافظة مطلوبة",
+    "cityRequired": "المدينة مطلوبة",
+    "streetRequired": "تفاصيل الشارع مطلوبة"
   }
 }

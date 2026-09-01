@@ -10,17 +10,26 @@
   "infoTitle": "Personal Information",
   "infoSubtitle": "View and edit your basic account information",
   "updateSuccess": "Profile updated successfully",
-  "passwordMismatchError": "Passwords do not match",
+  "deleteSuccess": "Account deleted successfully",
   "cancelBtn": "Cancel",
   "saveBtn": "Save Changes",
   "labels": {
-    "currentPassword": "Current Password"
+    "currentPassword": "Current Password",
+    "newPassword": "New Password",
+    "confirmPassword": "Confirm Password"
   },
   "editFields": {
     "name": "Edit Name",
     "email": "Edit Email",
     "phone": "Edit Phone",
     "password": "Change Password"
+  },
+  "dangerZone": {
+    "title": "Delete Account",
+    "subtitle": "Deactivate your account",
+    "confirmTitle": "Are you sure?",
+    "confirmText": "This action will deactivate your account. You will be logged out and cannot access your profile.",
+    "confirmBtn": "Delete Account"
   },
   "addressesTitle": "Saved Addresses",
   "addressesSubtitle": "Manage your shipping and delivery addresses",
@@ -35,7 +44,7 @@
   "city": "City",
   "street": "Street Details",
   "setAsDefault": "Set as default address",
-  "cancel": "Cancel",
+  "addAddress": "Add Address",
   "cardsTitle": "Payment Cards",
   "cardsSubtitle": "Manage the payment cards saved to your account",
   "payoutCardsTitle": "Payout Account",
@@ -51,12 +60,38 @@
   "saveCard": "Save Card",
   "errors": {
     "updateFailed": "Failed to update profile data",
+    "deleteAccountFailed": "Failed to delete account",
     "fetchAddressesFailed": "Failed to fetch addresses",
     "addAddressFailed": "Failed to add address",
     "updateAddressFailed": "Failed to update address",
     "deleteAddressFailed": "Failed to delete address",
     "fetchCardsFailed": "Failed to fetch payment cards",
     "addCardFailed": "Failed to add card",
-    "deleteCardFailed": "Failed to delete card"
+    "deleteCardFailed": "Failed to delete card",
+    "nameRequired": "Name is required",
+    "nameMin": "Name must be at least 3 characters",
+    "nameMax": "Name must not exceed 70 characters",
+    "emailRequired": "Email is required",
+    "emailInvalid": "Invalid email address",
+    "phoneRequired": "Phone number is required",
+    "phoneInvalid": "Invalid phone number (must start with 01 and be 11 digits)",
+    "roleRequired": "Role selection is required",
+    "currentPasswordRequired": "Current password is required",
+    "passwordRequired": "Password is required",
+    "passwordMin": "Password must be at least 8 characters",
+    "passwordMax": "Password must not exceed 20 characters",
+    "confirmPasswordRequired": "Confirm password is required",
+    "passwordMismatch": "Passwords do not match",
+    "cardHolderNameRequired": "Cardholder name is required",
+    "cardNumberRequired": "Card number is required",
+    "cardNumberInvalid": "Invalid card number (must be 16 digits)",
+    "expiryDateRequired": "Expiry date is required",
+    "expiryDateInvalid": "Invalid expiry date format (MM/YY)",
+    "cvvRequired": "CVC / CVV is required",
+    "cvvInvalid": "Invalid CVC / CVV (3 or 4 digits)",
+    "countryRequired": "Country is required",
+    "stateRequired": "State / Governorate is required",
+    "cityRequired": "City is required",
+    "streetRequired": "Street details are required"
   }
 }

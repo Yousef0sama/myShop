@@ -7,12 +7,11 @@ import {
   faEdit,
   faTrashAlt,
   faTimes,
-  faGlobe,
   faBuilding,
   faRoad,
   faCheckCircle,
 } from '@fortawesome/free-solid-svg-icons';
-
+import { getFormattedCountries } from '../../utils/countries';
 import useAppTranslation from '../../hooks/useAppTranslation';
 import {
   fetchAddresses,
@@ -21,133 +20,205 @@ import {
   deleteAddress,
 } from '../../store/slices/profileSlice';
 import Button from '../UI/Button';
+import Select from '../UI/Select';
 import Input from '../UI/Input';
 import Alert from '../UI/Alert';
 
 export default function AddressesTab({ userId }) {
-  const { t } = useAppTranslation('profile');
+  const { t, currentLanguage } = useAppTranslation('profile');
   const dispatch = useDispatch();
 
-  // ? Addresses now come from the real API via profileSlice, not local mock data
-  const addresses = useSelector((state) => state.profile.addresses);
+  // Redux state: stored user addresses
+  const addresses = useSelector((state) => state.profile.addresses || []);
 
   const [initialLoading, setInitialLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [alertConfig, setAlertConfig] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editingAddressId, setEditingAddressId] = useState(null); // null for create mode, string/number for edit mode
+  const [editingAddressId, setEditingAddressId] = useState(null);
 
-  // ? Form local state for creating/editing address entries
+  // Client-side form validation errors
+  const [errors, setErrors] = useState({});
+
+  // Form input state
   const [formData, setFormData] = useState({
     country: '',
+    countryCode: '',
     state: '',
     city: '',
     street: '',
     isDefault: false,
   });
 
-  // * Fetch the user's addresses from the API on mount
+  // Fetch addresses on initial mount or when userId changes
   useEffect(() => {
     if (!userId) return;
     setInitialLoading(true);
     dispatch(fetchAddresses(userId)).finally(() => setInitialLoading(false));
   }, [userId, dispatch]);
 
-  // * Form inputs dynamic change handler
+  // Dynamic input change handler
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: type === 'checkbox' ? checked : value,
-    }));
+
+    if (name === 'country') {
+      const countriesList = getFormattedCountries(currentLanguage);
+      const selectedOption = countriesList.find((opt) => opt.value === value);
+
+      setFormData((prev) => ({
+        ...prev,
+        countryCode: value,
+        country: selectedOption ? selectedOption.label : value,
+      }));
+    } else {
+      setFormData((prev) => ({
+        ...prev,
+        [name]: type === 'checkbox' ? checked : value,
+      }));
+    }
+
+    if (errors[name]) {
+      setErrors((prev) => ({
+        ...prev,
+        [name]: '',
+      }));
+    }
   };
 
-  // * Open Modal for Add new Address
+  // Open modal for creating a new address
   const handleOpenAddModal = () => {
+    const countries = getFormattedCountries(currentLanguage);
+    const defaultCountry = countries[0] || { value: '', label: '' };
+
     setEditingAddressId(null);
+    setErrors({});
     setFormData({
-      country: '',
+      country: defaultCountry.label,
+      countryCode: defaultCountry.value,
       state: '',
       city: '',
       street: '',
-      isDefault: addresses.length === 0, // Auto-check if it's the first address
+      isDefault: addresses.length === 0,
     });
     setIsModalOpen(true);
   };
 
-  // * Open Modal for Edit existing Address
+  // Open modal for editing an existing address
   const handleOpenEditModal = (address) => {
     setEditingAddressId(address.id);
+    setErrors({});
     setFormData({
-      country: address.country,
-      state: address.state,
-      city: address.city,
-      street: address.street,
+      country: address.country || '',
+      countryCode: address.countryCode || '',
+      state: address.state || '',
+      city: address.city || '',
+      street: address.street || '',
       isDefault: address.isDefault || false,
     });
     setIsModalOpen(true);
   };
 
-  // * Close Modal and reset input states
+  // Reset states and close modal
   const handleCloseModal = () => {
     setIsModalOpen(false);
     setEditingAddressId(null);
+    setErrors({});
   };
 
-  // * Submit form (Handles both CREATE and UPDATE requests through the real API)
+  // Submit form handler (Handles both CREATE and UPDATE requests)
   const handleSubmitForm = async (e) => {
     e.preventDefault();
+
     setIsSubmitting(true);
+    setAlertConfig(null);
+
+    const tErrors = t('errors', { returnObjects: true });
 
     try {
-      if (editingAddressId) {
-        // ! EDIT MODE: Update existing record via the API
-        await dispatch(
-          updateAddress({ addressId: editingAddressId, updatedData: formData })
-        ).unwrap();
-      } else {
-        // * CREATE MODE: Persist new record via the API
-        await dispatch(addAddress({ ...formData, userId })).unwrap();
-      }
-
-      // ? If this address was set as default, unset default on any other addresses via the API
+      // 1. Unset default flag on existing default addresses if this new/updated address is marked as default
       if (formData.isDefault) {
-        const othersMarkedDefault = addresses.filter(
+        const previousDefaults = addresses.filter(
           (addr) => addr.isDefault && addr.id !== editingAddressId
         );
+
         await Promise.all(
-          othersMarkedDefault.map((addr) =>
-            dispatch(updateAddress({ addressId: addr.id, updatedData: { isDefault: false } }))
+          previousDefaults.map((addr) =>
+            dispatch(
+              updateAddress({
+                addressId: addr.id,
+                updatedData: { ...addr, isDefault: false },
+                tErrors,
+              })
+            ).unwrap()
           )
         );
       }
+
+      // 2. Perform Create or Update operation
+      if (editingAddressId) {
+        await dispatch(
+          updateAddress({
+            addressId: editingAddressId,
+            updatedData: formData,
+            tErrors,
+          })
+        ).unwrap();
+      } else {
+        await dispatch(
+          addAddress({
+            addressData: { ...formData, userId },
+            tErrors,
+          })
+        ).unwrap();
+      }
+
+      setAlertConfig({
+        type: 'success',
+        message: editingAddressId
+          ?'Address updated successfully!'
+          :'Address added successfully!',
+      });
 
       handleCloseModal();
     } catch (err) {
       setAlertConfig({
         type: 'error',
-        message: typeof err === 'string' ? err : t('errors.addAddressFailed'),
+        message:
+          typeof err === 'string'
+            ? t(err) !== err
+              ? t(err)
+              : err
+            :'An error occurred while saving the address',
       });
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  // ! Delete address handler via the API
-  const handleDeleteAddress = (addressId) => {
-    dispatch(deleteAddress(addressId))
-      .unwrap()
-      .catch((err) => {
-        setAlertConfig({
-          type: 'error',
-          message: typeof err === 'string' ? err : t('errors.deleteAddressFailed'),
-        });
+  // Delete address handler
+  const handleDeleteAddress = async (addressId) => {
+    try {
+      await dispatch(deleteAddress(addressId)).unwrap();
+      setAlertConfig({
+        type: 'success',
+        message:'Address deleted successfully!',
       });
+    } catch (err) {
+      setAlertConfig({
+        type: 'error',
+        message:
+          typeof err === 'string'
+            ? t(err) !== err
+              ? t(err)
+              : err
+            : 'An error occurred while deleting the address',
+      });
+    }
   };
 
   return (
     <div className="max-w-4xl space-y-6">
-      {/* ! Toast notification for API errors */}
+      {/* Toast Alert Feedback */}
       {alertConfig && (
         <Alert
           type={alertConfig.type}
@@ -157,13 +228,15 @@ export default function AddressesTab({ userId }) {
         />
       )}
 
-      {/* * Header Section */}
+      {/* Tab Header */}
       <div className="flex items-center justify-between pb-4 border-b border-gray-200 dark:border-gray-800">
         <div>
           <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">
             {t('addressesTitle')}
           </h2>
-          <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">{t('addressesSubtitle')}</p>
+          <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+            {t('addressesSubtitle')}
+          </p>
         </div>
 
         <Button
@@ -177,23 +250,25 @@ export default function AddressesTab({ userId }) {
         </Button>
       </div>
 
-      {/* * Addresses Listing Container */}
+      {/* Address List View */}
       {initialLoading ? (
         <div className="py-12 flex justify-center">
           <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
         </div>
       ) : addresses.length === 0 ? (
-        /* Empty State Fallback */
+        /* Empty State */
         <div className="text-center py-12 border-2 border-dashed border-gray-200 dark:border-gray-800 rounded-2xl">
           <FontAwesomeIcon
             icon={faMapMarkerAlt}
             className="text-4xl text-gray-300 dark:text-gray-600 mb-3"
           />
-          <p className="text-gray-500 dark:text-gray-400 font-medium">{t('noAddresses')}</p>
+          <p className="text-gray-500 dark:text-gray-400 font-medium">
+            {t('noAddresses')}
+          </p>
         </div>
       ) : (
-        /* Addresses Grid List */
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        /* Address Cards Grid */
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
           {addresses.map((addr) => (
             <div
               key={addr.id}
@@ -206,43 +281,53 @@ export default function AddressesTab({ userId }) {
                     {t('defaultBadge')}
                   </span>
                 )}
+
+                {/* Title with Country Flag */}
                 <h3 className="font-semibold text-lg text-gray-900 dark:text-white flex items-center gap-2">
-                  <FontAwesomeIcon
-                    icon={faGlobe}
-                    className="text-blue-600 dark:text-blue-400 text-sm"
-                  />
-                  {addr.country} - {addr.state}
+                  {addr.countryCode && (
+                    <span className="text-xl leading-none">
+                      <img
+                        src={`https://flagcdn.com/w20/${addr.countryCode.toLowerCase()}.png`}
+                        alt={addr.country}
+                        className="inline-block"
+                      />
+                    </span>
+                  )}
+                  <span>{addr.country}</span> - <span>{addr.state}</span>
                 </h3>
+
                 <p className="text-sm text-gray-600 dark:text-gray-300 mt-1">
                   {addr.city}، {addr.street}
                 </p>
               </div>
 
-              {/* Action Buttons Row */}
+              {/* Action Buttons */}
               <div className="flex items-center gap-4 text-sm font-medium pt-3 border-t border-gray-100 dark:border-gray-700">
-                <button
+                <Button
+                  variant="primary"
+                  size="sm"
                   onClick={() => handleOpenEditModal(addr)}
-                  className="flex items-center gap-1.5 text-blue-600 hover:text-blue-700 dark:text-blue-400 transition-colors"
                 >
                   <FontAwesomeIcon icon={faEdit} className="text-xs" />
                   <span>{t('editBtn')}</span>
-                </button>
-                <button
+                </Button>
+                <Button
+                  variant="danger"
+                  size="sm"
                   onClick={() => handleDeleteAddress(addr.id)}
-                  className="flex items-center gap-1.5 text-rose-600 hover:text-rose-700 dark:text-rose-400 transition-colors"
                 >
                   <FontAwesomeIcon icon={faTrashAlt} className="text-xs" />
                   <span>{t('deleteBtn')}</span>
-                </button>
+                </Button>
               </div>
             </div>
           ))}
         </div>
       )}
 
-      {/* ! Dynamic Add/Edit Address Overlay Modal */}
+      {/* Add / Edit Address Modal Overlay */}
       {isModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs animate-in fade-in duration-200">
+        <div className="fixed top-[-1.25rem] inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs animate-in fade-in duration-200">
           <div className="w-full max-w-md bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden border border-gray-100 dark:border-gray-700">
             {/* Modal Header */}
             <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 dark:border-gray-700">
@@ -251,23 +336,22 @@ export default function AddressesTab({ userId }) {
               </h3>
               <button
                 onClick={handleCloseModal}
-                className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors"
+                className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors cursor-pointer"
               >
                 <FontAwesomeIcon icon={faTimes} className="text-lg" />
               </button>
             </div>
 
-            {/* Address Modal Input Form */}
+            {/* Modal Input Form */}
             <form onSubmit={handleSubmitForm} className="p-6 space-y-4">
               <div className="grid grid-cols-2 gap-4">
-                <Input
+                <Select
                   label={t('country')}
-                  type="text"
                   name="country"
-                  value={formData.country}
+                  value={formData.countryCode}
                   onChange={handleChange}
-                  icon={faGlobe}
-                  required
+                  options={getFormattedCountries(currentLanguage)}
+                  error={errors.country}
                 />
                 <Input
                   label={t('state')}
@@ -276,7 +360,7 @@ export default function AddressesTab({ userId }) {
                   value={formData.state}
                   onChange={handleChange}
                   icon={faBuilding}
-                  required
+                  error={errors.state}
                 />
               </div>
 
@@ -287,7 +371,7 @@ export default function AddressesTab({ userId }) {
                 value={formData.city}
                 onChange={handleChange}
                 icon={faMapMarkerAlt}
-                required
+                error={errors.city}
               />
 
               <Input
@@ -297,7 +381,7 @@ export default function AddressesTab({ userId }) {
                 value={formData.street}
                 onChange={handleChange}
                 icon={faRoad}
-                required
+                error={errors.street}
               />
 
               {/* Set Default Checkbox */}
@@ -308,7 +392,7 @@ export default function AddressesTab({ userId }) {
                   name="isDefault"
                   checked={formData.isDefault}
                   onChange={handleChange}
-                  className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600"
+                  className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 cursor-pointer"
                 />
                 <label
                   htmlFor="isDefault"
@@ -318,7 +402,7 @@ export default function AddressesTab({ userId }) {
                 </label>
               </div>
 
-              {/* Modal Buttons */}
+              {/* Modal Actions */}
               <div className="flex items-center justify-end gap-3 pt-4 border-t border-gray-100 dark:border-gray-700">
                 <Button
                   variant="secondary"
@@ -327,10 +411,17 @@ export default function AddressesTab({ userId }) {
                   type="button"
                   disabled={isSubmitting}
                 >
-                  {t('cancel')}
+                  {t('cancelBtn') || t('cancel') || 'Cancel'}
                 </Button>
-                <Button variant="primary" size="sm" type="submit" isLoading={isSubmitting}>
-                  {t('saveBtn')}
+                <Button
+                  variant="primary"
+                  size="sm"
+                  type="submit"
+                  isLoading={isSubmitting}
+                >
+                  {editingAddressId
+                    ? t('saveBtn') || 'Save Changes'
+                    : t('addNewAddress') || 'Add Address'}
                 </Button>
               </div>
             </form>

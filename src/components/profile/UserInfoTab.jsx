@@ -9,10 +9,12 @@ import {
   faEdit,
   faTimes,
   faShieldAlt,
+  faTrash,
+  faExclamationTriangle,
 } from '@fortawesome/free-solid-svg-icons';
 
 import useAppTranslation from '../../hooks/useAppTranslation';
-import { updateProfile, changePassword } from '../../store/slices/profileSlice';
+import { updateProfile, changePassword, deleteAccount } from '../../store/slices/profileSlice';
 import Input from '../UI/Input';
 import Button from '../UI/Button';
 import Card from '../UI/Card';
@@ -23,8 +25,8 @@ export default function UserInfoTab({ user }) {
   const { t: tAuth } = useAppTranslation('auth');
   const dispatch = useDispatch();
 
-  // ? State to control active edit field
-  const [activeModal, setActiveModal] = useState(null); // 'name' | 'email' | 'phone' | 'password' | null
+  // ? State to control active edit field ('name' | 'email' | 'phone' | 'password' | 'deleteAccount' | null)
+  const [activeModal, setActiveModal] = useState(null);
 
   // ? Tracks the in-flight submit request for this modal only
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -48,7 +50,6 @@ export default function UserInfoTab({ user }) {
   };
 
   // * Keep local form fields in sync whenever the Redux-backed user record changes
-  // ? (e.g. right after a successful updateProfile API call refreshes state.auth.user)
   useEffect(() => {
     setFormData((prev) => ({
       ...prev,
@@ -74,47 +75,54 @@ export default function UserInfoTab({ user }) {
     }));
   };
 
-  // * Submit dynamic field update — dispatches the real API-backed thunks instead of a local callback
+  // * Submit dynamic field update
   const handleSubmitUpdate = async (e) => {
     e.preventDefault();
-
-    // ! Password mismatch validation
-    if (activeModal === 'password' && formData.newPassword !== formData.confirmPassword) {
-      setAlertConfig({
-        type: 'error',
-        message: t('passwordMismatchError') || 'Passwords do not match',
-      });
-      return;
-    }
-
     setIsSubmitting(true);
+    setAlertConfig(null);
+
+    // Fetch translated errors object for client-side validation in Thunks
+    const tErrors = t('errors', { returnObjects: true });
 
     try {
       if (activeModal === 'password') {
-        // * Dispatch password change through the profile service API
+        // * Dispatch password change with current, new, confirm password & tErrors
         await dispatch(
-          changePassword({ userId: user?.id, newPassword: formData.newPassword })
+          changePassword({
+            userId: user?.id,
+            currentPassword: formData.currentPassword,
+            newPassword: formData.newPassword,
+            confirmPassword: formData.confirmPassword,
+            tErrors,
+          })
         ).unwrap();
+      } else if (activeModal === 'deleteAccount') {
+        // * Dispatch soft delete account
+        await dispatch(deleteAccount({ userId: user?.id })).unwrap();
       } else {
-        // * Dispatch the relevant single-field update through the profile service API
-        // ? (Redux internally syncs the refreshed value back into state.auth.user)
+        // * Dispatch single-field update with fieldName & tErrors
         await dispatch(
           updateProfile({
             userId: user?.id,
             updatedData: { [activeModal]: formData[activeModal] },
+            fieldName: activeModal,
+            tErrors,
           })
         ).unwrap();
       }
 
       setAlertConfig({
         type: 'success',
-        message: t('updateSuccess') || 'Profile updated successfully!',
+        message:
+          activeModal === 'deleteAccount'
+            ? t('deleteSuccess') || 'Account deleted successfully!'
+            : t('updateSuccess') || 'Profile updated successfully!',
       });
       handleCloseModal();
     } catch (err) {
       setAlertConfig({
         type: 'error',
-        message: typeof err === 'string' ? err : t('errors.updateFailed'),
+        message: typeof err === 'string' ? (t(err) !== err ? t(err) : err) : t('errors.updateFailed'),
       });
     } finally {
       setIsSubmitting(false);
@@ -123,7 +131,7 @@ export default function UserInfoTab({ user }) {
 
   return (
     <div className="max-w-4xl space-y-6">
-      {/* ! Feedback Message Displayed via Custom Alert Component in Modal Variant */}
+      {/* ! Feedback Message Displayed via Custom Alert Component */}
       {alertConfig && (
         <Alert
           type={alertConfig.type}
@@ -143,7 +151,7 @@ export default function UserInfoTab({ user }) {
         {/* * User Role Badge */}
         <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-blue-100 text-blue-800 dark:bg-blue-900/40 dark:text-blue-300 capitalize">
           <FontAwesomeIcon icon={faShieldAlt} className="text-xs" />
-          {user.role}
+          {user?.role}
         </span>
       </div>
 
@@ -234,16 +242,44 @@ export default function UserInfoTab({ user }) {
             </Button>
           </div>
         </Card>
+
+        {/* ! Danger Zone / Soft Delete Account Card */}
+        <Card
+          variant="outline"
+          padding="small"
+          className="border-red-200 dark:border-red-900/40 bg-red-50/20 dark:bg-red-950/10 mt-2"
+        >
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="p-3 bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 rounded-lg">
+                <FontAwesomeIcon icon={faTrash} className="text-lg" />
+              </div>
+              <div>
+                <p className="text-xs text-red-600 dark:text-red-400 font-medium">
+                  {t('dangerZone.title')}
+                </p>
+                <p className="text-base font-semibold text-gray-900 dark:text-white">
+                  {t('dangerZone.subtitle')}
+                </p>
+              </div>
+            </div>
+            <Button variant="danger" size="sm" onClick={() => handleOpenModal('deleteAccount')}>
+              <FontAwesomeIcon icon={faTrash} />
+            </Button>
+          </div>
+        </Card>
       </div>
 
-      {/* * Interactive Edit Form Overlay */}
+      {/* * Interactive Edit Form / Confirmation Overlay */}
       {activeModal && (
         <div className="absolute top-[-1.25rem] inset-0 z-40 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs animate-in fade-in duration-200">
           <div className="w-full max-w-md bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden border border-gray-100 dark:border-gray-700">
             {/* Modal Header */}
             <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 dark:border-gray-700">
               <h3 className="text-lg font-bold text-gray-900 dark:text-white">
-                {t(`editFields.${activeModal}`)}
+                {activeModal === 'deleteAccount'
+                  ? t('dangerZone.title')
+                  : t(`editFields.${activeModal}`)}
               </h3>
               <Button onClick={handleCloseModal} variant="danger" size="sm">
                 <FontAwesomeIcon icon={faTimes} className="text-lg" />
@@ -260,7 +296,6 @@ export default function UserInfoTab({ user }) {
                   value={formData.name}
                   onChange={handleChange}
                   icon={faUser}
-                  required
                 />
               )}
 
@@ -272,7 +307,6 @@ export default function UserInfoTab({ user }) {
                   value={formData.email}
                   onChange={handleChange}
                   icon={faEnvelope}
-                  required
                 />
               )}
 
@@ -284,7 +318,6 @@ export default function UserInfoTab({ user }) {
                   value={formData.phone}
                   onChange={handleChange}
                   icon={faPhone}
-                  required
                 />
               )}
 
@@ -297,30 +330,43 @@ export default function UserInfoTab({ user }) {
                     value={formData.currentPassword}
                     onChange={handleChange}
                     icon={faLock}
-                    required
                   />
                   <Input
-                    label={tAuth('labels.password')}
+                    label={t('labels.newPassword')}
                     type="password"
                     name="newPassword"
                     value={formData.newPassword}
                     onChange={handleChange}
                     icon={faLock}
-                    required
                   />
                   <Input
-                    label={tAuth('labels.confirmPassword')}
+                    label={t('labels.confirmPassword')}
                     type="password"
                     name="confirmPassword"
                     value={formData.confirmPassword}
                     onChange={handleChange}
                     icon={faLock}
-                    required
                   />
                 </>
               )}
 
-              <div className="flex items-center justify-end gap-3 pt-4">
+              {/* Confirmation View for Account Deletion */}
+              {activeModal === 'deleteAccount' && (
+                <div className="text-center space-y-3 py-2">
+                  <div className="w-12 h-12 rounded-full bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 flex items-center justify-center mx-auto">
+                    <FontAwesomeIcon icon={faExclamationTriangle} className="text-xl" />
+                  </div>
+                  <h4 className="text-base font-bold text-gray-900 dark:text-white">
+                    {t('dangerZone.confirmTitle')}
+                  </h4>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">
+                    {t('dangerZone.confirmText')}
+                  </p>
+                </div>
+              )}
+
+              {/* Action Buttons */}
+              <div className="flex items-center justify-end gap-3 pt-4 border-t border-gray-100 dark:border-gray-700">
                 <Button
                   variant="secondary"
                   size="sm"
@@ -330,8 +376,15 @@ export default function UserInfoTab({ user }) {
                 >
                   {t('cancelBtn')}
                 </Button>
-                <Button variant="primary" size="sm" type="submit" isLoading={isSubmitting}>
-                  {t('saveBtn')}
+                <Button
+                  variant={activeModal === 'deleteAccount' ? 'danger' : 'primary'}
+                  size="sm"
+                  type="submit"
+                  isLoading={isSubmitting}
+                >
+                  {activeModal === 'deleteAccount'
+                    ? t('dangerZone.confirmBtn')
+                    : t('saveBtn')}
                 </Button>
               </div>
             </form>
