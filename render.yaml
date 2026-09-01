@@ -1,0 +1,8 @@
+services:
+  - type: web
+    name: myshop-api
+    runtime: node
+    plan: free
+    buildCommand: npm ci --legacy-peer-deps
+    startCommand: npm run server
+    healthCheckPath: /products
