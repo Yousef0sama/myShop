@@ -2,13 +2,16 @@
 
 ## Chosen architecture
 
-Deploy the application as two services:
+Deploy the application as one Vercel project plus the existing mock API:
 
 ```text
-Browser → Vercel (React frontend) → Render (json-server-auth API)
+Browser → Vercel (React frontend + /api/chat) → OpenRouter
+        → Render (json-server-auth API)
 ```
 
-Vercel hosts the Create React App build at `https://<frontend>.vercel.app`; Render runs the existing `json-server-auth` service at `https://<backend>.onrender.com`.
+Vercel hosts the Create React App build and MyShop AI Assistant function at
+`https://<frontend>.vercel.app`; Render runs the existing `json-server-auth` service at
+`https://<backend>.onrender.com`.
 
 This is suitable for an ITI course demo. File-based `db.json` and `json-server-auth` are not suitable for production user management or payments.
 
@@ -39,7 +42,8 @@ Optionally add this local-only `.env.local` file:
 REACT_APP_API_URL=http://localhost:3001
 ```
 
-`REACT_APP_*` values are public browser configuration; never put secrets in them.
+`REACT_APP_*` values are public browser configuration; never put secrets in them. The chatbot
+uses the same-origin `/api/chat` function, so it does not need a public chat API URL.
 
 ### Configure the backend port
 
@@ -57,23 +61,70 @@ Create `vercel.json` in the repository root:
 
 ```json
 {
-  "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }]
+  "rewrites": [
+    {
+      "source": "/:path((?!api/|static/|favicon\\.ico$|manifest\\.json$|asset-manifest\\.json$|robots\\.txt$|logo192\\.png$|logo512\\.png$).*)",
+      "destination": "/index.html"
+    }
+  ]
 }
 ```
 
-This prevents 404s when a reviewer opens `/profile` or `/products` directly.
+This prevents 404s when a reviewer opens `/profile` or `/products` directly without
+rewriting Vercel Function paths or Create React App assets such as `/api/chat`,
+`/static/js/bundle.js`, and `/locales/ar/common.json`.
+
+### Test Vercel Functions locally
+
+`npm start` runs only the Create React App development server, so it cannot serve the
+`/api/chat` and `/api/health` Vercel Functions. To test the full local integration:
+
+1. In one terminal, run `npm run server` to start the mock API on port `3001`.
+2. Create a gitignored `.env.local` file using `.env.example` and set:
+
+   ```text
+   OPENROUTER_API_KEY=your_openrouter_key
+   REACT_APP_API_URL=http://localhost:3001
+   ```
+
+   Do not use a `REACT_APP_` prefix for `OPENROUTER_API_KEY`; that would expose it to the
+   browser. Leave `REACT_APP_CHAT_API_URL` unset so chat uses the same local Vercel origin.
+3. In a second terminal, export the local environment variables and run Vercel:
+
+   ```bash
+   set -a
+   . ./.env.local
+   set +a
+   npx vercel dev --local --listen 3000
+   ```
+
+   This serves the React app and functions together at `http://localhost:3000`, without
+   linking or creating a Vercel project. The explicit export is required because unlinked
+   `--local` mode does not pull Vercel environment variables.
+4. Verify the chat configuration:
+
+   ```bash
+   curl http://localhost:3000/api/health
+   ```
+
+   The expected response is `{"status":"ok","configured":true}`. Then open the site and
+   test the floating chatbot. A message containing a password, payment card, email address,
+   or more than 800 characters should be rejected.
+
+If the repository is linked to Vercel, run `vercel pull` to retrieve the Development
+environment variables for `vercel dev` instead of manually creating `.env.local`.
 
 ## 3. Deploy the API to Render
 
 1. Select **New → Web Service** in Render and connect the GitHub repository.
 2. Configure the service:
 
-   | Setting       | Value                                |
-   | ------------- | ------------------------------------ |
-   | Runtime       | Node                                 |
-   | Build command | `npm ci`                             |
-   | Start command | `npm run server`                     |
-   | Health check  | `/products` once products are seeded |
+   | Setting | Value |
+   | ------- | ----- |
+   | Runtime | Node  |
+   | Build command | `npm ci --legacy-peer-deps` |
+   | Start command | `npm run server` |
+   | Health check | `/products` once products are seeded |
 
 3. Deploy and copy the generated URL, for example `https://myshop-api.onrender.com`.
 4. Verify that `https://<backend>.onrender.com/products` and `/categories` return JSON.
@@ -92,14 +143,19 @@ For the demo, keep essential records committed in `db.json` and reset/redeploy f
 
    | Setting          | Value           |
    | ---------------- | --------------- |
+   | Install command  | Configured in `vercel.json` |
    | Build command    | `npm run build` |
    | Output directory | `build`         |
 
-4. Add this Vercel environment variable for Production (and Preview if required):
+4. Add these Vercel environment variables for Production (and Preview if required):
 
-   | Name                | Value                            |
-   | ------------------- | -------------------------------- |
-   | `REACT_APP_API_URL` | `https://<backend>.onrender.com` |
+| Name                 | Value                            |
+| -------------------- | -------------------------------- |
+| `REACT_APP_API_URL`  | `https://<backend>.onrender.com` |
+| `OPENROUTER_API_KEY` | Your real OpenRouter key         |
+
+`OPENROUTER_API_KEY` is read only by `api/chat.js` on Vercel. Do not prefix it with
+`REACT_APP_`, and never commit it in an `.env` file.
 
 5. Deploy. Vercel provides a public URL similar to `https://myshop.vercel.app`.
 6. Redeploy the frontend whenever `REACT_APP_API_URL` changes.
@@ -108,6 +164,8 @@ For the demo, keep essential records committed in `db.json` and reset/redeploy f
 
 - [ ] The Vercel URL loads a populated product catalogue.
 - [ ] Browser Network requests target the Render URL, never `localhost:3001`.
+- [ ] `https://<frontend>.vercel.app/api/health` returns JSON and reports whether the chat key is configured.
+- [ ] Chat requests go to `/api/chat` on the Vercel URL, never directly to OpenRouter.
 - [ ] Login and registration work with demo accounts.
 - [ ] One API-backed profile action works, such as adding an address.
 - [ ] Direct visits to `/products`, `/login`, and `/profile` work.
