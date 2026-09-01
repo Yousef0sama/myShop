@@ -1,0 +1,10 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "installCommand": "npm install --legacy-peer-deps",
+  "rewrites": [
+    {
+      "source": "/:path((?!api/|static/|locales/|favicon\\.ico$|manifest\\.json$|asset-manifest\\.json$|robots\\.txt$|logo192\\.png$|logo512\\.png$).*)",
+      "destination": "/index.html"
+    }
+  ]
+}

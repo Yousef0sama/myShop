@@ -41,5 +41,47 @@
   "fetchError": "Something went wrong while fetching data, please try again",
   "notFoundTitle": "Page Not Found",
   "notFoundMessage": "Sorry, the page you are looking for doesn't exist or has been moved.",
-  "backHome": "Back to Home"
+  "backHome": "Back to Home",
+  "chat": {
+    "title": "MyShop AI Assistant",
+    "open": "Open MyShop AI Assistant",
+    "close": "Close assistant",
+    "clearChat": "Clear chat",
+    "welcome": "Hi! I can help you find your way around MyShop. Choose a prompt or ask a question.",
+    "suggestedPrompts": "Suggested prompts",
+    "messageLabel": "Your message to MyShop AI Assistant",
+    "placeholder": "Ask about MyShop…",
+    "send": "Send message",
+    "thinking": "MyShop AI Assistant is thinking…",
+    "privacyNotice": "Please do not share passwords, payment details, contact details, or full addresses.",
+    "missingKey": "Development setup: add OPENROUTER_API_KEY to this Vercel project's environment variables, then redeploy.",
+    "suggestions": {
+      "customer": [
+        "How do I search and filter products?",
+        "How do I add products to my cart?",
+        "How do I place an order?",
+        "Where can I see my orders?"
+      ],
+      "seller": [
+        "How do I add a product?",
+        "How do I update stock?",
+        "Where can I view orders to process?"
+      ],
+      "admin": [
+        "How do I manage users?",
+        "How do I manage categories?",
+        "How do I update an order status?"
+      ]
+    },
+    "errors": {
+      "MESSAGE_TOO_LONG": "Please keep your message to 800 characters or fewer.",
+      "SENSITIVE_DATA": "For your privacy, remove personal, password, token, card, or contact information before sending.",
+      "MISSING_API_KEY": "Development setup: this Vercel project needs OPENROUTER_API_KEY in its environment variables.",
+      "RATE_LIMITED": "The free AI model is busy. Please wait a moment and try again.",
+      "MODEL_UNAVAILABLE": "A free AI model is unavailable right now. Please try again shortly.",
+      "UPSTREAM_UNAVAILABLE": "The AI service could not answer right now. Please try again.",
+      "INVALID_REQUEST": "Your message could not be sent. Please revise it and try again.",
+      "NETWORK_ERROR": "Unable to reach the chat service. Please try again."
+    }
+  }
 }
