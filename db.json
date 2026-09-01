@@ -156,6 +156,19 @@
       "stock": 0,
       "isActive": true,
       "discountPercentage": 0
+    },
+    {
+      "title": "car",
+      "price": 1000,
+      "category": "car",
+      "brand": "car",
+      "description": "no dis",
+      "thumbnail": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQmK7X0f0tolOwRqKUzSuNnImzcSQePk7GHKT_2PDNx8g_Oh6NQIPgWp-I&s=10",
+      "stock": 3,
+      "isActive": true,
+      "sellerId": 2,
+      "discountPercentage": 0,
+      "id": 7
     }
   ],
   "carts": [
