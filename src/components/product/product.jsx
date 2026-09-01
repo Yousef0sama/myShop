@@ -75,7 +75,7 @@ export default function Product({ product, onDelete, onEdit, canManage = false }
           <button
             onClick={handleWishlist}
             aria-label="Toggle wishlist"
-            className={`absolute top-3 end-3 z-10 p-2 rounded-full shadow ${productIds.includes(product.id) ? 'bg-red-500 text-white' : 'bg-white text-gray-700'}`}
+            className={`absolute top-3 right-3 z-10 p-2 rounded-full shadow ${productIds.includes(product.id) ? 'bg-red-500 text-white' : 'bg-white text-gray-700'}`}
           >
             <FontAwesomeIcon icon={faHeart} />
           </button>
